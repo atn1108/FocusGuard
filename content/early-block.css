@@ -1,0 +1,29 @@
+/* FocusGuard early blocking */
+
+ytd-reel-shelf-renderer,
+ytd-rich-section-renderer,
+a[href*="/shorts/"] {
+
+    display:none !important;
+
+}
+
+
+/* TikTok */
+
+div[data-e2e="recommend-list-item-container"],
+div[data-e2e="feed-list"] {
+
+    display:none !important;
+
+}
+
+
+/* Meta reels */
+
+a[href*="/reel"],
+a[href*="/reels"] {
+
+    display:none !important;
+
+}

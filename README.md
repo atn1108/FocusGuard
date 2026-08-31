@@ -1,85 +1,70 @@
-# FocusGuard
+
+# 🛡️ FocusGuard
 
 > Stop mindless scrolling before it starts.
 
-FocusGuard la extension giam viec luot **YouTube Shorts**, **TikTok**, **Instagram Reels** va **Facebook Reels** bang cach tao mot khoang dung truoc khi nguoi dung tiep tuc xem.
+FocusGuard là Chrome Extension giúp hạn chế việc lướt **YouTube Shorts, TikTok, Instagram Reels và Facebook Reels** bằng cách tạo một khoảng dừng trước khi người dùng tiếp tục.
+
+Thay vì chặn hoàn toàn, FocusGuard yêu cầu người dùng **chờ 30 giây và đưa ra quyết định có ý thức**.
 
 ---
 
-# Muc tieu
+## ✨ Tính năng
 
-Thay vi chan hoan toan, FocusGuard bu nguoi dung **dua ra quyet dinh co y thuc** truoc khi tiep tuc luot video ngan.
-
-> Neu sau 30 giay ban van muon xem, hay xem.
-> Neu khong du kien nhan de doi 30 giay thi co le ban cung khong that su muon xem.
-
----
-
-# Tinh nang
-
-**Chinh:**
-* Phat hien khi truy cap `/shorts`, `/reel`, `/reels` hoac cac trang TikTok.
-* Hien popup xac nhan voi hieu ung frosted-glass.
-* Nut **Xem tiep 10 phut** bi khoa 30 giay.
-* Het 30 giay moi duoc tiep tuc.
-* Neu chon **Quay lai** -> dong tab.
-* Neu chon **Xem tiep** -> khong hoi lai trong 10 phut.
-* CSS som an noi dung truoc khi JavaScript chay, ngan hien thi "flash" noi dung.
-
-**Quan ly:**
-* Bao gom popup (master toggle + 4 toggle nen tang rieng le).
-* Trang options voi dieu khien chi tiet hon.
-* Nut **Cho phep 5 phut** trong options: tat ca chan tam ngung 5 phut.
-* Thong ke so lan chan trong ngay, hien thi trong popup.
-
-**Ky thuat:**
-* Phat hien SPA navigation qua `history.pushState` / `replaceState` / `popstate`.
-* `MutationObserver` quan sat DOM, rescan sau 500ms debounce.
-* Chan click lien ket reel/reels, chuyen huong ve trang chu.
-* Xoa cac the `<a>` chua `/reel` khoi DOM.
-* Badge mau do "!" tren icon extension khi co su kien chan.
+* ⏱️ **Countdown 30 giây** trước khi được tiếp tục.
+* 🔓 **Override 10 phút** cho từng nền tảng.
+* ⚙️ **Master toggle** và toggle riêng cho từng nền tảng.
+* 📊 **Thống kê số lần chặn trong ngày**.
+* ⏳ Hiển thị **thời gian override còn lại** ngay trong popup.
+* 🚫 Chặn `ESC`, `F5`, `Ctrl + R` và `Cmd + R` khi popup đang mở.
+* 🧊 Popup giao diện **frosted glass**.
+* 🛡️ CSS chặn sớm, hạn chế flash nội dung.
+* 🔄 Hỗ trợ **SPA navigation** và `MutationObserver`.
+* 🔗 Chặn/xóa liên kết Reel và Shorts.
+* 🔴 Hiển thị badge `!` khi có sự kiện chặn.
 
 ---
 
-# Nen tang ho tro
+## 🌐 Nền tảng
 
-| Nen tang | Kieu chan |
-|---|---|
-| YouTube (`/shorts/*`) | Popup xac nhan |
-| TikTok (toan trang) | Popup xac nhan |
-| Instagram (`/reel/*`, `/reels/*`) | Redirect truc tiep ve trang chu |
-| Facebook (`/reel/*`, `/reels/*`) | Redirect truc tiep ve trang chu |
+| Nền tảng | Phạm vi                  | Cơ chế         |
+| ---------- | ------------------------- | ---------------- |
+| YouTube    | `/shorts/*`             | Popup + 30 giây |
+| TikTok     | Toàn trang               | Popup + 30 giây |
+| Instagram  | `/reel/*`, `/reels/*` | Chuyển hướng  |
+| Facebook   | `/reel/*`, `/reels/*` | Chuyển hướng  |
 
----
+### Override
 
-# Override 10 phut
+Khi chọn **Xem tiếp**:
 
-Sau khi xac nhan "Xem tiep":
-
-* Khong hien popup nua tren nen tang do.
-* Khong chan.
-* Het 10 phut tu dong bat lai.
-* Moi nen tang co bo dem rieng (luu trong `chrome.storage.local` voi key `override`).
+* Nền tảng đó được mở trong **10 phút**.
+* Không hiển thị popup trong thời gian override.
+* Mỗi nền tảng có bộ đếm riêng.
+* Hết 10 phút, FocusGuard tự động bật lại.
 
 ---
 
-# Chan phim tat
+## ⚙️ Quản lý
 
-Popup dang mo co thu chan:
-* ESC
-* F5
-* Ctrl + R
-* Cmd + R (macOS)
+### Popup
 
-Nguoi dung phai:
-* Quay lai
-* Hoac cho du 30 giay.
+* Bật/tắt FocusGuard.
+* Bật/tắt từng nền tảng.
+* Xem thống kê trong ngày.
+* Xem thời gian override.
+* Mở trang Options.
+
+### Options
+
+* Quản lý các nền tảng.
+* **Cho phép 5 phút** để tạm ngừng toàn bộ chặn.
 
 ---
 
-# Cau truc project
+## 📁 Cấu trúc
 
-```
+```text
 FocusGuard/
 ├── manifest.json
 ├── background.js
@@ -108,16 +93,16 @@ FocusGuard/
 
 ---
 
-# Quyen
+## 🔐 Permissions
 
-```
+```text
 storage
 tabs
 ```
 
-Host:
+### Host permissions
 
-```
+```text
 *://*.youtube.com/*
 *://*.tiktok.com/*
 *://*.instagram.com/*
@@ -126,40 +111,52 @@ Host:
 
 ---
 
-# Roadmap
+## 🚀 Cài đặt
 
-## v1.5
+1. Mở `chrome://extensions`.
+2. Bật **Developer mode**.
+3. Chọn **Load unpacked**.
+4. Chọn thư mục `FocusGuard`.
 
-* YouTube Shorts
-* TikTok
-* Instagram Reels
-* Facebook Reels
-* Popup xac nhan voi countdown 30 giay
-* Override 10 phut moi nen tang
-* Bao gom popup va trang options
-* Thong ke so lan chan/ngay
-* CSS an som noi dung
-* SPA navigation detection (History API)
-* DOM mutation observer
-* Chan click va xoa lien ket reel
-
-## v2
-
-* Strict Mode
-* Pomodoro
-* Daily Goal
-* Whitelist / Blacklist
-* Password mo khoa
-* Dong bo Chrome
-* Thong ke chi tiet hon
-* Theme
+> Yêu cầu trình duyệt Chromium hỗ trợ Manifest V3.
 
 ---
 
-# Triet ly
+## 🗺️ Roadmap
 
-FocusGuard khong co gang cam nguoi dung.
+### v1.5
 
-No chi tao ra mot khoang dung ngan de giup nguoi dung suy nghi truoc khi tiep tuc luot.
+* [X] YouTube Shorts
+* [X] TikTok
+* [X] Instagram Reels
+* [X] Facebook Reels
+* [X] Countdown 30 giây
+* [X] Override 10 phút
+* [X] Popup & Options
+* [X] Thống kê
+* [X] SPA navigation
+* [X] MutationObserver
+* [X] Early blocking
+* [X] Link blocking
+* [X] Extension badge
 
-Neu sau 30 giay ban van muon xem, FocusGuard se ngan can.
+### v2
+
+* [ ] Strict Mode
+* [ ] Pomodoro
+* [ ] Daily Goal
+* [ ] Whitelist / Blacklist
+* [ ] Password Unlock
+* [ ] Chrome Sync
+* [ ] Thống kê nâng cao
+* [ ] Theme
+
+---
+
+## 🧠 Philosophy
+
+FocusGuard không cấm bạn xem.
+
+Nó chỉ tạo ra **30 giây để bạn dừng lại và lựa chọn**.
+
+> **Pause. Think. Choose.**

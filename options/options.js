@@ -5,119 +5,50 @@ const ids = [
     "facebook"
 ];
 
-
-function load(){
-
-
+function load() {
     chrome.storage.local.get(
         ids,
-        data=>{
-
-
-            ids.forEach(id=>{
-
-                document
-                .getElementById(id)
-                .checked =
-                    data[id] !== false;
-
+        data => {
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.checked = data[id] !== false;
+                }
             });
-
-
         }
     );
-
-
 }
 
+function showSaved(text) {
+    const el = document.getElementById("saved");
+    el.textContent = text;
+    setTimeout(() => {
+        if (el.textContent === text) {
+            el.textContent = "";
+        }
+    }, 1800);
+}
 
-
-function save(){
-
-
+function save() {
     const settings = {};
-
-
-    ids.forEach(id=>{
-
-
-        settings[id] =
-        document
-        .getElementById(id)
-        .checked;
-
-
+    ids.forEach(id => {
+        settings[id] = document.getElementById(id).checked;
     });
 
-
-
-    chrome.storage.local.set(
-        settings,
-        ()=>{
-
-            document
-            .getElementById("saved")
-            .textContent =
-            "Đã lưu";
-
-
-            setTimeout(()=>{
-
-                document
-                .getElementById("saved")
-                .textContent="";
-
-            },1500);
-
-        }
-    );
-
+    chrome.storage.local.set(settings, () => {
+        showSaved("Đã lưu");
+    });
 }
 
-
-
-ids.forEach(id=>{
-
-
-    document
-    .getElementById(id)
-    .addEventListener(
-        "change",
-        save
-    );
-
-
+ids.forEach(id => {
+    document.getElementById(id).addEventListener("change", save);
 });
 
-
-
-
-document
-.getElementById("allow")
-.addEventListener(
-    "click",
-    ()=>{
-
-
-        chrome.storage.local.set({
-
-            allowUntil:
-            Date.now()
-            +
-            5*60*1000
-
-        });
-
-
-        document
-        .getElementById("saved")
-        .textContent =
-        "Đã mở 5 phút";
-
-
-    }
-);
-
-
+document.getElementById("allow").addEventListener("click", () => {
+    chrome.storage.local.set({
+        allowUntil: Date.now() + 5 * 60 * 1000
+    });
+    showSaved("Đã mở 5 phút");
+});
 
 load();

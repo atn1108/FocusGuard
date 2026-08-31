@@ -1,123 +1,230 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-
-    width:320px;
-
-    margin:0;
-
-    padding:0;
-
-    font-family:
-    "Segoe UI",
-    sans-serif;
-
-    background:#f3f3f3;
-
+  width: 340px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f8f9fb;
+  color: #1a1a2e;
+  -webkit-font-smoothing: antialiased;
 }
 
-
-
-.container {
-
-    padding:20px;
-
+.popup {
+  padding: 16px;
 }
 
-
-
-h2 {
-
-    margin-top:0;
-
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
-
-
-h3 {
-
-    font-size:15px;
-
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-
-
-hr {
-
-    border:none;
-
-    border-top:1px solid #ddd;
-
-    margin:15px 0;
-
+.shield-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-
-
-label {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
-
-
-.item {
-
-    margin:12px 0;
-
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
-
-
-input {
-
-    width:17px;
-
-    height:17px;
-
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
 }
 
-
-
-button {
-
-    width:100%;
-
-    margin-top:15px;
-
-    padding:10px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#0078d4;
-
-    color:white;
-
-    cursor:pointer;
-
+.toggle .slider {
+  display: block;
+  width: 44px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 24px;
+  transition: background 0.25s;
+  position: relative;
 }
 
-
-
-button:hover {
-
-    opacity:.9;
-
+.toggle .slider::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
+.toggle input:checked + .slider {
+  background: #2563eb;
+}
 
+.toggle input:checked + .slider::after {
+  transform: translateX(20px);
+}
 
-#status {
+.toggle.small .slider {
+  width: 36px;
+  height: 20px;
+}
 
-    text-align:center;
+.toggle.small .slider::after {
+  width: 14px;
+  height: 14px;
+  top: 3px;
+  left: 3px;
+}
 
-    color:green;
+.toggle.small input:checked + .slider::after {
+  transform: translateX(16px);
+}
 
-    font-size:13px;
+/* Section */
+.section {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #f0f0f5;
+}
 
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
+/* Platform List */
+.platform-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.platform-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px;
+  border-radius: 10px;
+  transition: background 0.15s;
+}
+
+.platform-item:hover {
+  background: #f8f9fb;
+}
+
+.platform-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.platform-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.platform-icon.yt {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.platform-icon.tt {
+  background: #f0fdf4;
+  color: #1a1a2e;
+}
+
+.platform-icon.ig {
+  background: #fdf4ff;
+  color: #d946ef;
+}
+
+.platform-icon.fb {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.platform-name {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+/* Stats */
+.stats-section {
+  margin-bottom: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 8px 4px;
+  background: #f8f9fb;
+  border-radius: 10px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Disabled state */
+body.disabled .platform-item {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+body.disabled .stats-section {
+  opacity: 0.4;
 }

@@ -13,6 +13,13 @@ const statKeys = {
     facebook: "stat-facebook"
 };
 
+const overrideIds = {
+    youtube: "cd-youtube",
+    tiktok: "cd-tiktok",
+    instagram: "cd-instagram",
+    facebook: "cd-facebook"
+};
+
 function applyEnabledState(enabled) {
     document.body.classList.toggle("disabled", !enabled);
 }
@@ -53,6 +60,31 @@ function loadStats() {
     });
 }
 
+function formatRemaining(ms) {
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}p ${s}s`;
+}
+
+function updateCountdowns() {
+    chrome.storage.local.get(["override"], data => {
+        const override = data.override || {};
+        const now = Date.now();
+        Object.keys(overrideIds).forEach(platform => {
+            const el = document.getElementById(overrideIds[platform]);
+            const until = override[platform];
+            if (until && now < until) {
+                el.textContent = "✅ " + formatRemaining(until - now);
+                el.classList.add("active");
+            } else {
+                el.textContent = "";
+                el.classList.remove("active");
+            }
+        });
+    });
+}
+
 ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -62,3 +94,5 @@ ids.forEach(id => {
 
 load();
 loadStats();
+updateCountdowns();
+setInterval(updateCountdowns, 1000);

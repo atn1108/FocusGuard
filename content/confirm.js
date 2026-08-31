@@ -1,4 +1,4 @@
-function showConfirm(platform){
+﻿function showConfirm(platform){
     if(sessionStorage.getItem("fg_asked_" + platform)){
         return Promise.resolve(false);
     }
@@ -82,6 +82,14 @@ function showConfirm(platform){
             line-height:1.7 !important;
 
             color:#4b5563 !important;
+
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;
+        }
+
+        .fg-confirm-card h2,
+        .fg-confirm-card button{
+
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;
         }
 
         .fg-confirm-card button{

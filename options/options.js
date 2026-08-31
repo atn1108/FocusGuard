@@ -1,4 +1,4 @@
-const ids = [
+﻿const ids = [
     "youtube",
     "tiktok",
     "instagram",

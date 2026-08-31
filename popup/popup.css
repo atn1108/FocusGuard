@@ -27,22 +27,28 @@ body {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .shield-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border-radius: 10px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  overflow: hidden;
+}
+
+.app-icon {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
 }
 
 .title {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.3px;
 }

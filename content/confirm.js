@@ -290,10 +290,15 @@
                 clearInterval(timer);
                 document.removeEventListener("keydown", keyHandler, true);
 
-                if (!noOverride) {
-                    allowBtn.disabled = false;
-                    allowBtn.textContent = "Xem tiếp 10 phút";
+                if (noOverride) {
+                    box.remove();
+                    chrome.runtime.sendMessage({ type: "closeTab" });
+                    resolve(false);
+                    return;
                 }
+
+                allowBtn.disabled = false;
+                allowBtn.textContent = "Xem tiếp 10 phút";
                 timerText.textContent = "0s";
             } else {
                 timerText.textContent = time + "s";

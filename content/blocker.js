@@ -1,337 +1,297 @@
-console.log("[FocusGuard] blocker.js START");
+console.log("[FocusGuard] blocker.js START v2");
 
-window.onerror = function(msg, url, line){
-    console.log(
-        "[FocusGuard ERROR]",
-        msg,
-        "line:",
-        line
-    );
+window.onerror = function(msg, url, line) {
+    console.log("[FocusGuard ERROR]", msg, "line:", line);
 };
 
-(function(){
+(function() {
 
     let lastBlockedUrl = "";
     let blocking = false;
     let running = false;
 
-async function checkOverride(platform){
-
-    return new Promise(resolve=>{
-
-        chrome.storage.local.get(
-            ["override"],
-            data=>{
-
-                const override =
-                data.override || {};
-
-
-                resolve(
-                    override[platform] &&
-                    Date.now() <
-                    override[platform]
-                );
-
-            }
-        );
-
-    });
-
-}
-
-async function requestBlock(platform){
-
-    console.log(
-    "FocusGuard request:",
-    platform
-    );
-    const allowed =
-    await checkOverride(platform);
-
-
-    if(allowed){
-
-        return false;
-
+    async function getStorage(keys) {
+        return new Promise(resolve => {
+            chrome.storage.local.get(keys, data => resolve(data));
+        });
     }
 
+    async function checkOverride(platform) {
+        const data = await getStorage(["override"]);
+        const override = data.override || {};
+        return override[platform] && Date.now() < override[platform];
+    }
 
-    const result =
-    await showConfirm(platform);
+    async function checkPomodoro() {
+        const data = await getStorage(["pomodoro"]);
+        const pomo = data.pomodoro || {};
+        if (!pomo.enabled || !pomo.endsAt) return false;
+        if (pomo.isBreak) return true;
+        return false;
+    }
 
+    async function checkWhitelistBlacklist() {
+        const data = await getStorage(["whitelist", "blacklist"]);
+        const whitelist = data.whitelist || [];
+        const blacklist = data.blacklist || [];
+        const url = location.href;
+        const host = location.hostname;
 
-    return !result;
-
-}
-
-function getSetting(name){
-
-    return new Promise(resolve=>{
-
-        chrome.storage.local.get(
-            [name],
-            data=>{
-
-                resolve(
-                    data[name] !== false
-                );
-
+        for (const item of whitelist) {
+            if (url.includes(item) || host.includes(item)) {
+                return "whitelisted";
             }
-        );
+        }
 
-    });
-
-}
-
-
-function isEnabled(){
-
-    return new Promise(resolve=>{
-
-        chrome.storage.local.get(
-            ["enabled"],
-            data=>{
-
-                resolve(
-                    data.enabled !== false
-                );
-
+        for (const item of blacklist) {
+            if (url.includes(item) || host.includes(item)) {
+                return "blacklisted";
             }
-        );
+        }
 
-    });
+        return null;
+    }
 
-}
+    async function checkDailyGoal() {
+        try {
+            const result = await new Promise(resolve => {
+                chrome.runtime.sendMessage({ type: "CHECK_DAILY_GOAL" }, resolve);
+            });
+            return result ? result.reached : false;
+        } catch (e) {
+            return false;
+        }
+    }
 
+    async function requestBlock(platform) {
+        console.log("FocusGuard request:", platform);
 
-function isAllowedTemporarily(){
+        const inBreak = await checkPomodoro();
+        if (inBreak) return false;
 
-    return new Promise(resolve => {
+        const wlBl = await checkWhitelistBlacklist();
+        if (wlBl === "whitelisted") return false;
 
-        chrome.storage.local.get(
-            ["allowUntil"],
-            data => {
+        const dailyGoalReached = await checkDailyGoal();
+        if (dailyGoalReached) return true;
 
-                if(
-                    data.allowUntil &&
-                    Date.now() < data.allowUntil
-                ){
+        const strictMode = (await getStorage(["strictMode"])).strictMode;
+
+        const result = await showConfirm(platform, strictMode, dailyGoalReached);
+        return !result;
+    }
+
+    function getSetting(name) {
+        return new Promise(resolve => {
+            chrome.storage.local.get([name], data => {
+                resolve(data[name] !== false);
+            });
+        });
+    }
+
+    function isEnabled() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(["enabled"], data => {
+                resolve(data.enabled !== false);
+            });
+        });
+    }
+
+    function isAllowedTemporarily() {
+        return new Promise(resolve => {
+            chrome.storage.local.get(["allowUntil"], data => {
+                if (data.allowUntil && Date.now() < data.allowUntil) {
                     resolve(true);
-                }
-                else{
+                } else {
                     resolve(false);
                 }
+            });
+        });
+    }
 
-            }
-        );
+    function blockReelsLinks() {
+        document.querySelectorAll("a").forEach(link => {
+            const href = link.href || "";
 
-    });
+            if (
+                href.includes("instagram.com/reel") ||
+                href.includes("instagram.com/reels") ||
+                href.includes("facebook.com/reel") ||
+                href.includes("facebook.com/reels")
+            ) {
 
-}
-
-function blockReelsLinks(){
-
-    document
-    .querySelectorAll("a")
-    .forEach(link=>{
-
-        const href = link.href || "";
-
-
-        if(
-            href.includes("instagram.com/reel") ||
-            href.includes("instagram.com/reels") ||
-            href.includes("facebook.com/reel") ||
-            href.includes("facebook.com/reels")
-        ){
-
-            link.addEventListener(
-                "click",
-                e=>{
-
+                link.addEventListener("click", e => {
                     e.preventDefault();
                     e.stopPropagation();
 
-
-                    if(
-                        href.includes("instagram")
-                    ){
-
-                        window.location.href =
-                        "https://www.instagram.com/";
-
-                    }
-                    else{
-
-                        window.location.href =
-                        "https://www.facebook.com/";
-
+                    if (href.includes("instagram")) {
+                        window.location.href = "https://www.instagram.com/";
+                    } else {
+                        window.location.href = "https://www.facebook.com/";
                     }
 
-                },
-                true
-            );
+                }, true);
 
+            }
 
+        });
+    }
+
+    window.FocusGuardScan = async function scan() {
+
+        if (running) return;
+        running = true;
+
+        const enabled = await isEnabled();
+        if (!enabled) {
+            const overlay = document.getElementById("focusguard-overlay");
+            if (overlay) overlay.remove();
+            running = false;
+            return;
         }
 
-    });
+        blockReelsLinks();
 
-}
-
-window.FocusGuardScan = async function scan(){
-
-    if(running)
-        return;
-
-    running = true;
-    const enabled = await isEnabled();
-
-    if(!enabled){
-        const overlay = document.getElementById("focusguard-overlay");
-        if(overlay) overlay.remove();
-        running = false;
-        return;
-    }
-
-    blockReelsLinks();
-    const allowed = await isAllowedTemporarily();
-    if(allowed){
-        running = false;
-        return;
-    }
-
-    const host = location.hostname;
-    const path = location.pathname;
-
-    // Instagram Reels
-    if (host.includes("instagram.com") && (path.startsWith("/reel") || path.startsWith("/reels"))){
-        chrome.runtime.sendMessage({ type: "BLOCKED" });
-        window.location.href = "https://www.instagram.com/";
-        running = false;
-        return;
-    }
-
-    // Facebook Reels
-    if (host.includes("facebook.com") && (path.includes("/reel") || path.includes("/reels"))){
-        chrome.runtime.sendMessage({ type: "BLOCKED" });
-        window.location.href = "https://www.facebook.com/";
-        running = false;
-        return;
-    }
-
-    document.querySelectorAll("a").forEach(a=>{
-        const href = a.href || "";
-        if(href.includes("/reel") || href.includes("/reels")){
-            a.remove();
+        const allowed = await isAllowedTemporarily();
+        if (allowed) {
+            running = false;
+            return;
         }
-    });
 
-    // YouTube Shorts
-    if(host.includes("youtube.com") && await getSetting("youtube")){
-        if(location.pathname.startsWith("/shorts")){
-            if(lastBlockedUrl === location.href){
+        const inBreak = await checkPomodoro();
+        if (inBreak) {
+            running = false;
+            return;
+        }
+
+        const wlBl = await checkWhitelistBlacklist();
+        if (wlBl === "whitelisted") {
+            running = false;
+            return;
+        }
+
+        const host = location.hostname;
+        const path = location.pathname;
+
+        // Instagram Reels
+        if (host.includes("instagram.com") && (path.startsWith("/reel") || path.startsWith("/reels"))) {
+            chrome.runtime.sendMessage({ type: "BLOCKED" });
+            window.location.href = "https://www.instagram.com/";
+            running = false;
+            return;
+        }
+
+        // Facebook Reels
+        if (host.includes("facebook.com") && (path.includes("/reel") || path.includes("/reels"))) {
+            chrome.runtime.sendMessage({ type: "BLOCKED" });
+            window.location.href = "https://www.facebook.com/";
+            running = false;
+            return;
+        }
+
+        document.querySelectorAll("a").forEach(a => {
+            const href = a.href || "";
+            if (href.includes("/reel") || href.includes("/reels")) {
+                a.remove();
+            }
+        });
+
+        // YouTube Shorts
+        if (host.includes("youtube.com") && await getSetting("youtube")) {
+            if (location.pathname.startsWith("/shorts")) {
+                if (lastBlockedUrl === location.href) {
+                    running = false;
+                    return;
+                }
+
+                lastBlockedUrl = location.href;
+
+                if (window.FG_BLOCKING) {
+                    running = false;
+                    return;
+                }
+
+                window.FG_BLOCKING = true;
+                console.log("FG: request youtube");
+                const shouldBlock = await requestBlock("youtube");
+                if (shouldBlock) {
+                    chrome.runtime.sendMessage({ type: "blocked", platform: "youtube" });
+                }
+
+                window.FG_BLOCKING = false;
                 running = false;
                 return;
             }
 
-            lastBlockedUrl = location.href;
+            document.querySelectorAll("a[href^='/shorts']").forEach(el => {
+                el.style.display = "none";
+            });
+        }
 
-            if(window.FG_BLOCKING){
+        // TikTok
+        if (host.includes("tiktok.com") && await getSetting("tiktok")) {
+
+            if (window.FG_BLOCKING) {
                 running = false;
                 return;
             }
 
             window.FG_BLOCKING = true;
-            console.log("FG: request youtube");
-            const shouldBlock = await requestBlock("youtube");
-            if(shouldBlock){
-                chrome.runtime.sendMessage({ type: "blocked", platform: "youtube" });
+
+            const shouldBlock = await requestBlock("tiktok");
+
+            window.FG_BLOCKING = false;
+
+            if (shouldBlock) {
+                chrome.runtime.sendMessage({
+                    type: "blocked",
+                    platform: "tiktok"
+                });
+                running = false;
+                return;
             }
 
             running = false;
             return;
         }
 
-        document.querySelectorAll("a[href^='/shorts']").forEach(el=>{
-            el.style.display = "none";
-        });
-    }
+        // Instagram (other routes)
+        if (host.includes("instagram.com") && await getSetting("instagram")) {
+            if (await requestBlock("instagram")) {
+                chrome.runtime.sendMessage({ type: "blocked", platform: "instagram" });
+                running = false;
+                return;
+            }
+        }
 
-    // TikTok
-if (host.includes("tiktok.com") && await getSetting("tiktok")) {
-
-    if (window.FG_BLOCKING) {
-        running = false;
-        return;
-    }
-
-    window.FG_BLOCKING = true;
-
-    const shouldBlock = await requestBlock("tiktok");
-
-    window.FG_BLOCKING = false;
-
-    if (shouldBlock) {
-
-        chrome.runtime.sendMessage({
-            type: "blocked",
-            platform: "tiktok"
-        });
-
-        running = false;
-        return;
-    }
-
-    running = false;
-    return;
-}
-
-    // Instagram (other routes)
-    if(host.includes("instagram.com") && await getSetting("instagram")){
-        if(await requestBlock("instagram")){
-            chrome.runtime.sendMessage({ type: "blocked", platform: "instagram" });
+        if ((location.pathname.startsWith("/reel") || location.pathname.startsWith("/reels"))) {
+            chrome.runtime.sendMessage({ type: "BLOCKED" });
+            window.location.href = "https://www.instagram.com/";
             running = false;
             return;
         }
-    }
 
-    if((location.pathname.startsWith("/reel") || location.pathname.startsWith("/reels"))){
-        chrome.runtime.sendMessage({ type: "BLOCKED" });
-        window.location.href = "https://www.instagram.com/";
-        running = false;
-        return;
-    }
+        // Facebook (other routes)
+        if (host.includes("facebook.com") && await getSetting("facebook")) {
+            if (await requestBlock("facebook")) {
+                chrome.runtime.sendMessage({ type: "blocked", platform: "facebook" });
+                running = false;
+                return;
+            }
+        }
 
-    // Facebook (other routes)
-    if(host.includes("facebook.com") && await getSetting("facebook")){
-        if(await requestBlock("facebook")){
-            chrome.runtime.sendMessage({ type: "blocked", platform: "facebook" });
+        if (location.pathname.includes("/reel") || location.pathname.includes("/reels")) {
+            chrome.runtime.sendMessage({ type: "BLOCKED" });
+            window.location.href = "https://www.facebook.com/";
             running = false;
             return;
         }
-    }
 
-    if(location.pathname.includes("/reel") || location.pathname.includes("/reels")){
-        chrome.runtime.sendMessage({ type: "BLOCKED" });
-        window.location.href = "https://www.facebook.com/";
         running = false;
-        return;
-    }
+    };
 
-    running = false;
-}
+    console.log("[FocusGuard] Blocker loaded v2");
+    window.FocusGuard = window.FocusGuard || {};
+    window.FocusGuard.scan = window.FocusGuardScan;
 
-console.log("[FocusGuard] Blocker loaded");
-window.FocusGuard =
-window.FocusGuard || {};
-
-window.FocusGuard.scan =
-window.FocusGuardScan;
-
-console.log(
-    "FG export:",
-    typeof window.FocusGuard.scan
-);
 })();

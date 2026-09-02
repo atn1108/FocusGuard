@@ -94,6 +94,106 @@
 
     <div class="card-divider"></div>
 
+    <div class="card-title">Chế độ nghiêm ngặt</div>
+    <p class="section-desc">Khi bật, không thể bỏ qua chặn. Phải chờ 60 giây rồi chỉ được quay lại.</p>
+
+    <div class="setting-row">
+      <div class="setting-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Bật chế độ nghiêm ngặt</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="strictMode">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="card-title">Pomodoro</div>
+    <p class="section-desc">Tập trung theo chu kỳ. Trong giờ nghỉ, FocusGuard tạm ngừng chặn.</p>
+
+    <div class="setting-row">
+      <div class="setting-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Bật Pomodoro</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="pomodoro-enabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="pomo-settings" id="pomo-settings">
+      <div class="input-row">
+        <label>Thời gian tập trung (phút)</label>
+        <input type="number" id="pomo-focus" min="1" max="120" value="25" class="num-input">
+      </div>
+      <div class="input-row">
+        <label>Nghỉ giải lao (phút)</label>
+        <input type="number" id="pomo-break" min="1" max="30" value="5" class="num-input">
+      </div>
+      <div class="pomo-actions">
+        <button id="pomo-start" class="action-btn primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Bắt đầu
+        </button>
+        <button id="pomo-stop" class="action-btn danger" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"/></svg>
+          Dừng
+        </button>
+        <span class="pomo-status-text" id="pomo-status-text"></span>
+      </div>
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="card-title">Mục tiêu hàng ngày</div>
+    <p class="section-desc">Giới hạn số lần bạn được bỏ qua chặn mỗi ngày.</p>
+
+    <div class="setting-row">
+      <div class="setting-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Bật mục tiêu</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="dailyGoal-enabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="goal-settings" id="goal-settings">
+      <div class="input-row">
+        <label>Số lần bypass tối đa / ngày</label>
+        <input type="number" id="dailyGoal-max" min="0" max="50" value="3" class="num-input">
+      </div>
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="card-title">Danh sách chặn / cho phép</div>
+    <p class="section-desc">Whitelist: không bao giờ chặn. Blacklist: luôn chặn (dù nền tảng tắt).</p>
+
+    <div class="list-section">
+      <div class="list-label">Whitelist</div>
+      <div class="list-items" id="whitelist-items"></div>
+      <div class="list-add">
+        <input type="text" id="whitelist-input" placeholder="youtube.com/watch?v=..." class="text-input">
+        <button id="whitelist-add" class="action-btn primary small">+</button>
+      </div>
+    </div>
+
+    <div class="list-section">
+      <div class="list-label">Blacklist</div>
+      <div class="list-items" id="blacklist-items"></div>
+      <div class="list-add">
+        <input type="text" id="blacklist-input" placeholder="tiktok.com/fyp..." class="text-input">
+        <button id="blacklist-add" class="action-btn primary small">+</button>
+      </div>
+    </div>
+
+    <div class="card-divider"></div>
+
     <div class="card-title">Tạm ngưng</div>
 
     <button id="allow" class="allow-btn">
@@ -105,11 +205,33 @@
     </button>
     <p class="hint">Tạm ngừng tất cả chặn trong 5 phút.</p>
 
+    <div class="card-divider"></div>
+
+    <div class="card-title">Giao diện</div>
+
+    <div class="theme-options">
+      <label class="theme-option">
+        <input type="radio" name="theme" value="auto" checked>
+        <div class="theme-preview auto-preview"></div>
+        <span>Tự động</span>
+      </label>
+      <label class="theme-option">
+        <input type="radio" name="theme" value="light">
+        <div class="theme-preview light-preview"></div>
+        <span>Sáng</span>
+      </label>
+      <label class="theme-option">
+        <input type="radio" name="theme" value="dark">
+        <div class="theme-preview dark-preview"></div>
+        <span>Tối</span>
+      </label>
+    </div>
+
     <p id="saved" class="saved"></p>
 
   </div>
 
-  <div class="footer">FocusGuard v1.5</div>
+  <div class="footer">FocusGuard v2.0</div>
 
 </div>
 

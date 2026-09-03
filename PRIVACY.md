@@ -26,7 +26,8 @@ All of this data is written only to `chrome.storage.local`, which lives in your 
 | ---------- | ------- |
 | `storage` | Persist your settings and usage statistics locally. |
 | `alarms` | Drive the Pomodoro timer in the background. |
-| `tabs` | Close a tab when you choose "Quay lại" or when strict mode / daily-goal limit is reached. |
+
+FocusGuard does **not** request the `tabs` permission. It does not read the URL, title, or contents of your tabs beyond the pages it runs on. When you choose "Quay lại" or when strict mode / daily-goal limit is reached, the extension closes the current tab using the sender tab id from its own content script — this works without the `tabs` permission.
 
 **Host permissions** are limited to the social platforms the extension operates on (`youtube.com`, `tiktok.com`, `instagram.com`, `facebook.com`). The extension only ever reads the URL and DOM it needs to decide whether to show the FocusGuard confirmation, and it never modifies your accounts or posts.
 

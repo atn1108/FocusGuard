@@ -155,9 +155,10 @@ FocusGuard/
 
 ```text
 storage
-tabs
 alarms
 ```
+
+> Không yêu cầu quyền `tabs`. Việc đóng tab (Strict Mode / "Quay lại") dùng `chrome.tabs.remove(sender.tab.id)` với sender từ content script — hợp lệ mà không cần `tabs`.
 
 ### Host permissions
 

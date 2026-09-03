@@ -37,16 +37,21 @@ window.onerror = function(msg, url, line) {
         const url = location.href;
         const host = location.hostname;
 
+        function matchesItem(item) {
+            const needle = item.toLowerCase();
+            const h = host.toLowerCase();
+            const u = url.toLowerCase();
+            if (h === needle || h.endsWith("." + needle) || h.endsWith("/" + needle)) return true;
+            if (u.includes("://" + needle) || u.includes("." + needle + "/") || u.includes("." + needle + "?")) return true;
+            return false;
+        }
+
         for (const item of whitelist) {
-            if (url.includes(item) || host.includes(item)) {
-                return "whitelisted";
-            }
+            if (matchesItem(item)) return "whitelisted";
         }
 
         for (const item of blacklist) {
-            if (url.includes(item) || host.includes(item)) {
-                return "blacklisted";
-            }
+            if (matchesItem(item)) return "blacklisted";
         }
 
         return null;
@@ -73,8 +78,6 @@ window.onerror = function(msg, url, line) {
         if (wlBl === "whitelisted") return false;
 
         const dailyGoalReached = await checkDailyGoal();
-        if (dailyGoalReached) return true;
-
         const strictMode = (await getStorage(["strictMode"])).strictMode;
 
         const result = await showConfirm(platform, strictMode, dailyGoalReached);
@@ -172,21 +175,26 @@ window.onerror = function(msg, url, line) {
 
         const host = location.hostname;
         const path = location.pathname;
+        const isBlacklisted = wlBl === "blacklisted";
 
         // Instagram Reels
         if (host.includes("instagram.com") && (path.startsWith("/reel") || path.startsWith("/reels"))) {
-            chrome.runtime.sendMessage({ type: "BLOCKED" });
-            window.location.href = "https://www.instagram.com/";
-            running = false;
-            return;
+            if (isBlacklisted || await getSetting("instagram")) {
+                chrome.runtime.sendMessage({ type: "BLOCKED" });
+                window.location.href = "https://www.instagram.com/";
+                running = false;
+                return;
+            }
         }
 
         // Facebook Reels
         if (host.includes("facebook.com") && (path.includes("/reel") || path.includes("/reels"))) {
-            chrome.runtime.sendMessage({ type: "BLOCKED" });
-            window.location.href = "https://www.facebook.com/";
-            running = false;
-            return;
+            if (isBlacklisted || await getSetting("facebook")) {
+                chrome.runtime.sendMessage({ type: "BLOCKED" });
+                window.location.href = "https://www.facebook.com/";
+                running = false;
+                return;
+            }
         }
 
         document.querySelectorAll("a").forEach(a => {
@@ -264,13 +272,6 @@ window.onerror = function(msg, url, line) {
             }
         }
 
-        if ((location.pathname.startsWith("/reel") || location.pathname.startsWith("/reels"))) {
-            chrome.runtime.sendMessage({ type: "BLOCKED" });
-            window.location.href = "https://www.instagram.com/";
-            running = false;
-            return;
-        }
-
         // Facebook (other routes)
         if (host.includes("facebook.com") && await getSetting("facebook")) {
             if (await requestBlock("facebook")) {
@@ -278,13 +279,6 @@ window.onerror = function(msg, url, line) {
                 running = false;
                 return;
             }
-        }
-
-        if (location.pathname.includes("/reel") || location.pathname.includes("/reels")) {
-            chrome.runtime.sendMessage({ type: "BLOCKED" });
-            window.location.href = "https://www.facebook.com/";
-            running = false;
-            return;
         }
 
         running = false;

@@ -23,7 +23,7 @@
             return;
         }
 
-        const noOverride = strictMode || dailyGoalReached;
+        const noOverride = strictMode || !!dailyGoalReached;
 
         style.textContent = `
         #fg-confirm {
@@ -214,7 +214,7 @@
         if (strictMode) {
             subtext = `Bạn đã bật chế độ nghiêm ngặt. Không thể bỏ qua trong ${countdownTime} giây.`;
         } else if (dailyGoalReached) {
-            subtext = `Bạn đã đạt giới hạn ${countdownTime} lần bypass hôm nay. Quay lại để giữ thói quen tốt.`;
+            subtext = `Bạn đã đạt giới hạn bypass hôm nay. Quay lại để giữ thói quen tốt.`;
         } else {
             subtext = `Bạn có chắc muốn lướt ${platform}?`;
         }
@@ -321,13 +321,19 @@
                 clearInterval(timer);
                 document.removeEventListener("keydown", keyHandler, true);
 
-                chrome.storage.local.get(["override"], data => {
+                chrome.storage.local.get(["override", "dailyGoal"], data => {
                     let override = data.override || {};
                     override[platform] = Date.now() + 10 * 60 * 1000;
-                    chrome.storage.local.set({ override }, () => {
 
-                        chrome.runtime.sendMessage({ type: "INCREMENT_DAILY_GOAL" });
+                    let dailyGoal = data.dailyGoal || {};
+                    const today = new Date().toDateString();
+                    if (dailyGoal.date !== today) {
+                        dailyGoal.currentOverrides = 0;
+                        dailyGoal.date = today;
+                    }
+                    dailyGoal.currentOverrides++;
 
+                    chrome.storage.local.set({ override, dailyGoal }, () => {
                         box.remove();
                         resolve(true);
                     });

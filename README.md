@@ -145,6 +145,7 @@ FocusGuard/
 │   ├── 32.png
 │   ├── 48.png
 │   └── 128.png
+├── PRIVACY.md
 └── README.md
 ```
 
@@ -165,10 +166,9 @@ alarms
 *://*.tiktok.com/*
 *://*.instagram.com/*
 *://*.facebook.com/*
-http://localhost/*
-http://127.0.0.1/*
-*://*.netlify.app/*
 ```
+
+> Không có quyền truy cập vào localhost / 127.0.0.1 . Xem chính sách quyền riêng tư tại [PRIVACY.md](PRIVACY.md).
 
 ---
 
@@ -210,6 +210,17 @@ http://127.0.0.1/*
 * [X] Whitelist / Blacklist
 * [X] Thống kê nâng cao
 * [X] Theme
+
+### v2.1 (Production Hardening)
+
+* [X] Rà soát & sửa edge case (daily goal reset, pomodoro bị reset khi lưu settings, null daily goal, precedence whitelist/blacklist)
+* [X] Cải thiện khớp whitelist/blacklist theo domain
+* [X] Gỡ host permission dev (localhost / 127.0.0.1 / netlify)
+* [X] Viết chính sách quyền riêng tư (PRIVACY.md)
+
+### v3 (Kế hoạch)
+
+* [ ] (dành cho bản phát hành tiếp theo)
 
 ---
 

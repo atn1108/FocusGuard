@@ -92,28 +92,35 @@ function save() {
     const pomoEnabled = document.getElementById("pomodoro-enabled");
     const pomoFocus = document.getElementById("pomo-focus");
     const pomoBreak = document.getElementById("pomo-break");
-    settings.pomodoro = {
-        enabled: pomoEnabled ? pomoEnabled.checked : false,
-        focusMinutes: parseInt(pomoFocus ? pomoFocus.value : 25) || 25,
-        breakMinutes: parseInt(pomoBreak ? pomoBreak.value : 5) || 5,
-        isBreak: false,
-        endsAt: 0
-    };
+    chrome.storage.local.get(["pomodoro"], pomoData => {
+        const existingPomo = pomoData.pomodoro || {};
+        settings.pomodoro = {
+            enabled: pomoEnabled ? pomoEnabled.checked : false,
+            focusMinutes: parseInt(pomoFocus ? pomoFocus.value : 25) || 25,
+            breakMinutes: parseInt(pomoBreak ? pomoBreak.value : 5) || 5,
+            isBreak: existingPomo.isBreak || false,
+            endsAt: existingPomo.endsAt || 0
+        };
 
-    const goalEnabled = document.getElementById("dailyGoal-enabled");
-    const goalMax = document.getElementById("dailyGoal-max");
-    settings.dailyGoal = {
-        enabled: goalEnabled ? goalEnabled.checked : false,
-        maxOverrides: parseInt(goalMax ? goalMax.value : 3) || 3,
-        currentOverrides: 0,
-        date: new Date().toDateString()
-    };
+        const goalEnabled = document.getElementById("dailyGoal-enabled");
+        const goalMax = document.getElementById("dailyGoal-max");
+        chrome.storage.local.get(["dailyGoal"], data => {
+            const existing = data.dailyGoal || {};
+            const today = new Date().toDateString();
+            settings.dailyGoal = {
+                enabled: goalEnabled ? goalEnabled.checked : false,
+                maxOverrides: parseInt(goalMax ? goalMax.value : 3) || 3,
+                currentOverrides: existing.date === today ? (existing.currentOverrides || 0) : 0,
+                date: existing.date === today ? existing.date : today
+            };
 
-    const themeRadio = document.querySelector('input[name="theme"]:checked');
-    settings.theme = themeRadio ? themeRadio.value : "auto";
+            const themeRadio = document.querySelector('input[name="theme"]:checked');
+            settings.theme = themeRadio ? themeRadio.value : "auto";
 
-    chrome.storage.local.set(settings, () => {
-        showSaved("Đã lưu");
+            chrome.storage.local.set(settings, () => {
+                showSaved("Đã lưu");
+            });
+        });
     });
 }
 

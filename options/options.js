@@ -12,6 +12,20 @@ function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme || "auto");
 }
 
+function applyI18n() {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        const text = t(key);
+        if (el.tagName === "INPUT") {
+            el.placeholder = text;
+        } else {
+            el.textContent = text;
+        }
+    });
+    const label = document.getElementById("lang-label");
+    if (label) label.textContent = getLanguage() === "vi" ? "VI" : "EN";
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local") {
         if (changes.theme) applyTheme(changes.theme.newValue || "auto");
@@ -118,7 +132,7 @@ function save() {
             settings.theme = themeRadio ? themeRadio.value : "auto";
 
             chrome.storage.local.set(settings, () => {
-                showSaved("Đã lưu");
+                showSaved(t("saved"));
             });
         });
     });
@@ -140,7 +154,7 @@ function updatePomodoroStatus(pomo) {
     const remaining = Math.max(0, pomo.endsAt - now);
     const min = Math.floor(remaining / 60000);
     const sec = Math.floor((remaining % 60000) / 1000);
-    const phase = pomo.isBreak ? "Nghỉ giải lao" : "Tập trung";
+    const phase = pomo.isBreak ? t("breakTime") : t("focusSession");
 
     if (statusText) {
         statusText.textContent = `${phase}: ${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
@@ -175,7 +189,7 @@ function renderList(containerId, items, type) {
                 list.splice(idx, 1);
                 chrome.storage.local.set({ [key]: list }, () => {
                     renderList(containerId, list, t);
-                    showSaved("Đã xóa");
+                    showSaved(t("savedDelete"));
                 });
             });
         });
@@ -200,14 +214,14 @@ function addToList(type) {
     chrome.storage.local.get([key], data => {
         const list = data[key] || [];
         if (list.includes(value)) {
-            showSaved("Đã tồn tại");
+            showSaved(t("savedExists"));
             return;
         }
         list.push(value);
         chrome.storage.local.set({ [key]: list }, () => {
             renderList(containerId, list, type);
             input.value = "";
-            showSaved("Đã thêm");
+            showSaved(t("savedAdd"));
         });
     });
 }
@@ -245,7 +259,7 @@ if (pomoStartBtn) {
             focusMinutes: focus,
             breakMinutes: brk
         }, () => {
-            showSaved("Pomodoro đã bắt đầu");
+            showSaved(t("pomodoroStarted"));
             load();
         });
     });
@@ -255,7 +269,7 @@ const pomoStopBtn = document.getElementById("pomo-stop");
 if (pomoStopBtn) {
     pomoStopBtn.addEventListener("click", () => {
         chrome.runtime.sendMessage({ type: "STOP_POMODORO" }, () => {
-            showSaved("Pomodoro đã dừng");
+            showSaved(t("pomodoroStopped"));
             load();
         });
     });
@@ -294,7 +308,7 @@ document.getElementById("allow").addEventListener("click", () => {
     chrome.storage.local.set({
         allowUntil: Date.now() + 5 * 60 * 1000
     });
-    showSaved("Đã mở 5 phút");
+    showSaved(t("allow5min"));
 });
 
 setInterval(() => {
@@ -302,5 +316,18 @@ setInterval(() => {
         updatePomodoroStatus(data.pomodoro);
     });
 }, 1000);
+
+const langSwitch = document.getElementById("lang-switch");
+if (langSwitch) {
+    langSwitch.addEventListener("click", () => {
+        const next = getLanguage() === "vi" ? "en" : "vi";
+        saveLanguage(next);
+        applyI18n();
+    });
+}
+
+initLanguage(() => {
+    applyI18n();
+});
 
 load();

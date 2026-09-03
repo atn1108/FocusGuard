@@ -5,6 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FocusGuard - Cài đặt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="options.css">
 </head>
 
@@ -17,12 +20,12 @@
       <img src="../icons/128.png" alt="FocusGuard" class="app-icon">
     </div>
     <h1>FocusGuard</h1>
-    <p>Cài đặt chặn nội dung gây mất tập trung</p>
+    <p data-i18n="settingsDesc">Cài đặt chặn nội dung gây mất tập trung</p>
   </div>
 
   <div class="card">
 
-    <div class="card-title">Chặn theo nền tảng</div>
+    <div class="card-title" data-i18n="blockByPlatform">Chặn theo nền tảng</div>
 
     <div class="platform-list">
 
@@ -32,8 +35,8 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.5 15.5v-7L16 12l-6.5 3.5z"/></svg>
           </div>
           <div class="platform-text">
-            <span class="name">YouTube Shorts</span>
-            <span class="desc">Chặn /shorts/*</span>
+            <span class="name" data-i18n="youtubeShorts">YouTube Shorts</span>
+            <span class="desc" data-i18n="blockShorts">Chặn /shorts/*</span>
           </div>
         </div>
         <label class="toggle">
@@ -48,8 +51,8 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.11V9a6.33 6.33 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.3a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V9.13a8.28 8.28 0 0 0 4.83 1.55V7.24a4.83 4.83 0 0 1-1.07-.55z"/></svg>
           </div>
           <div class="platform-text">
-            <span class="name">TikTok</span>
-            <span class="desc">Chặn toàn trang</span>
+            <span class="name" data-i18n="tiktok">TikTok</span>
+            <span class="desc" data-i18n="blockAll">Chặn toàn trang</span>
           </div>
         </div>
         <label class="toggle">
@@ -64,8 +67,8 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </div>
           <div class="platform-text">
-            <span class="name">Instagram Reels</span>
-            <span class="desc">Chặn /reel*, /reels*</span>
+            <span class="name" data-i18n="instagramReels">Instagram Reels</span>
+            <span class="desc" data-i18n="blockReels">Chặn /reel*, /reels*</span>
           </div>
         </div>
         <label class="toggle">
@@ -80,8 +83,8 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.88v2.26h3.33l-.53 3.49h-2.8v8.44C19.61 23.08 24 18.09 24 12.07z"/></svg>
           </div>
           <div class="platform-text">
-            <span class="name">Facebook Reels</span>
-            <span class="desc">Chặn /reel*, /reels*</span>
+            <span class="name" data-i18n="facebookReels">Facebook Reels</span>
+            <span class="desc" data-i18n="blockReels">Chặn /reel*, /reels*</span>
           </div>
         </div>
         <label class="toggle">
@@ -94,13 +97,13 @@
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Chế độ nghiêm ngặt</div>
-    <p class="section-desc">Khi bật, không thể bỏ qua chặn. Phải chờ 60 giây rồi chỉ được quay lại.</p>
+    <div class="card-title" data-i18n="strictMode">Chế độ nghiêm ngặt</div>
+    <p class="section-desc" data-i18n="strictModeDesc">Khi bật, không thể bỏ qua chặn. Phải chờ 60 giây rồi chỉ được quay lại.</p>
 
     <div class="setting-row">
       <div class="setting-label">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Bật chế độ nghiêm ngặt</span>
+        <span data-i18n="enableStrictMode">Bật chế độ nghiêm ngặt</span>
       </div>
       <label class="toggle">
         <input type="checkbox" id="strictMode">
@@ -110,13 +113,13 @@
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Pomodoro</div>
-    <p class="section-desc">Tập trung theo chu kỳ. Trong giờ nghỉ, FocusGuard tạm ngừng chặn.</p>
+    <div class="card-title" data-i18n="pomodoroTitle">Pomodoro</div>
+    <p class="section-desc" data-i18n="pomodoroDesc">Tập trung theo chu kỳ. Trong giờ nghỉ, FocusGuard tạm ngừng chặn.</p>
 
     <div class="setting-row">
       <div class="setting-label">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Bật Pomodoro</span>
+        <span data-i18n="enablePomodoro">Bật Pomodoro</span>
       </div>
       <label class="toggle">
         <input type="checkbox" id="pomodoro-enabled">
@@ -126,21 +129,21 @@
 
     <div class="pomo-settings" id="pomo-settings">
       <div class="input-row">
-        <label>Thời gian tập trung (phút)</label>
+        <label data-i18n="focusTime">Thời gian tập trung (phút)</label>
         <input type="number" id="pomo-focus" min="1" max="120" value="25" class="num-input">
       </div>
       <div class="input-row">
-        <label>Nghỉ giải lao (phút)</label>
+        <label data-i18n="breakTimeLabel">Nghỉ giải lao (phút)</label>
         <input type="number" id="pomo-break" min="1" max="30" value="5" class="num-input">
       </div>
       <div class="pomo-actions">
         <button id="pomo-start" class="action-btn primary">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Bắt đầu
+          <span data-i18n="start">Bắt đầu</span>
         </button>
         <button id="pomo-stop" class="action-btn danger" style="display:none;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"/></svg>
-          Dừng
+          <span data-i18n="stop">Dừng</span>
         </button>
         <span class="pomo-status-text" id="pomo-status-text"></span>
       </div>
@@ -148,13 +151,13 @@
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Mục tiêu hàng ngày</div>
-    <p class="section-desc">Giới hạn số lần bạn được bỏ qua chặn mỗi ngày.</p>
+    <div class="card-title" data-i18n="dailyGoalTitle">Mục tiêu hàng ngày</div>
+    <p class="section-desc" data-i18n="dailyGoalDesc">Giới hạn số lần bạn được bỏ qua chặn mỗi ngày.</p>
 
     <div class="setting-row">
       <div class="setting-label">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <span>Bật mục tiêu</span>
+        <span data-i18n="enableDailyGoal">Bật mục tiêu</span>
       </div>
       <label class="toggle">
         <input type="checkbox" id="dailyGoal-enabled">
@@ -164,18 +167,18 @@
 
     <div class="goal-settings" id="goal-settings">
       <div class="input-row">
-        <label>Số lần bypass tối đa / ngày</label>
+        <label data-i18n="maxBypass">Số lần bypass tối đa / ngày</label>
         <input type="number" id="dailyGoal-max" min="0" max="50" value="3" class="num-input">
       </div>
     </div>
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Danh sách chặn / cho phép</div>
-    <p class="section-desc">Whitelist: không bao giờ chặn. Blacklist: luôn chặn (dù nền tảng tắt).</p>
+    <div class="card-title" data-i18n="blockAllowList">Danh sách chặn / cho phép</div>
+    <p class="section-desc" data-i18n="whitelistDesc">Whitelist: không bao giờ chặn. Blacklist: luôn chặn (dù nền tảng tắt).</p>
 
     <div class="list-section">
-      <div class="list-label">Whitelist</div>
+      <div class="list-label" data-i18n="whitelist">Whitelist</div>
       <div class="list-items" id="whitelist-items"></div>
       <div class="list-add">
         <input type="text" id="whitelist-input" placeholder="youtube.com/watch?v=..." class="text-input">
@@ -184,7 +187,7 @@
     </div>
 
     <div class="list-section">
-      <div class="list-label">Blacklist</div>
+      <div class="list-label" data-i18n="blacklist">Blacklist</div>
       <div class="list-items" id="blacklist-items"></div>
       <div class="list-add">
         <input type="text" id="blacklist-input" placeholder="tiktok.com/fyp..." class="text-input">
@@ -194,36 +197,36 @@
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Tạm ngưng</div>
+    <div class="card-title" data-i18n="pause">Tạm ngưng</div>
 
     <button id="allow" class="allow-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
       </svg>
-      Tạm dừng 5 phút
+      <span data-i18n="pause5min">Tạm dừng 5 phút</span>
     </button>
-    <p class="hint">Tạm ngừng tất cả chặn trong 5 phút.</p>
+    <p class="hint" data-i18n="pauseDesc">Tạm ngừng tất cả chặn trong 5 phút.</p>
 
     <div class="card-divider"></div>
 
-    <div class="card-title">Giao diện</div>
+    <div class="card-title" data-i18n="appearance">Giao diện</div>
 
     <div class="theme-options">
       <label class="theme-option">
         <input type="radio" name="theme" value="auto" checked>
         <div class="theme-preview auto-preview"></div>
-        <span>Tự động</span>
+        <span data-i18n="auto">Tự động</span>
       </label>
       <label class="theme-option">
         <input type="radio" name="theme" value="light">
         <div class="theme-preview light-preview"></div>
-        <span>Sáng</span>
+        <span data-i18n="light">Sáng</span>
       </label>
       <label class="theme-option">
         <input type="radio" name="theme" value="dark">
         <div class="theme-preview dark-preview"></div>
-        <span>Tối</span>
+        <span data-i18n="dark">Tối</span>
       </label>
     </div>
 
@@ -231,10 +234,22 @@
 
   </div>
 
-  <div class="footer">FocusGuard v2.0</div>
+  <div class="footer">
+    <span>FocusGuard v2.1</span>
+    <span class="footer-sep">|</span>
+    <div class="lang-switch" id="lang-switch" title="Language">
+      <span class="lang-label" id="lang-label">VI</span>
+    </div>
+    <span class="footer-sep">|</span>
+    <a href="https://github.com/atn1108/FocusGuard" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
 
 </div>
 
+<script src="i18n.js"></script>
 <script src="options.js"></script>
 
 </body>

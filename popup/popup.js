@@ -28,6 +28,20 @@ function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
 }
 
+function applyI18n() {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        const text = t(key);
+        if (el.tagName === "INPUT") {
+            el.placeholder = text;
+        } else {
+            el.textContent = text;
+        }
+    });
+    const label = document.getElementById("lang-label");
+    if (label) label.textContent = getLanguage() === "vi" ? "VI" : "EN";
+}
+
 function load() {
     chrome.storage.local.get(
         [...ids, "strictMode", "theme", "pomodoro", "dailyGoal"],
@@ -135,7 +149,7 @@ function updatePomodoroDisplay(pomo) {
     const source = document.getElementById("pomo-source");
 
     if (phase) {
-        phase.textContent = pomo.isBreak ? "Nghỉ giải lao" : "Đang tập trung";
+        phase.textContent = pomo.isBreak ? t("breakTime") : t("focusSession");
     }
     if (timer) {
         timer.textContent = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
@@ -226,6 +240,26 @@ if (openOptions) {
         chrome.runtime.openOptionsPage();
     });
 }
+
+const langSwitch = document.getElementById("lang-switch");
+if (langSwitch) {
+    langSwitch.addEventListener("click", () => {
+        const next = getLanguage() === "vi" ? "en" : "vi";
+        saveLanguage(next);
+        applyI18n();
+        updatePomodoroDisplayNow();
+    });
+}
+
+function updatePomodoroDisplayNow() {
+    chrome.storage.local.get(["pomodoro"], data => {
+        updatePomodoroDisplay(data.pomodoro);
+    });
+}
+
+initLanguage(() => {
+    applyI18n();
+});
 
 load();
 loadStats();

@@ -34,6 +34,12 @@ Thay vì chặn hoàn toàn, FocusGuard yêu cầu người dùng **chờ 30 gi�
 * **Thống kê nâng cao** — Theo dõi số lần chặn theo ngày, chuỗi thành công (streak).
 * **Theme** — Hỗ trợ giao diện Sáng / Tối / Tự động.
 
+### v2.1 (UI Modern + i18n)
+
+* **Giao diện hiện đại** — Font **Plus Jakarta Sans**, micro-interactions, dark mode tối ưu, spacing & border-radius nhất quán, shadow tokens (sm/md/lg).
+* **Đa ngôn ngữ (Việt / Anh)** — Switch ngôn ngữ ngay trong popup và Options. Ngôn ngữ được lưu và áp dụng cho toàn bộ giao diện.
+* **Link GitHub** trong footer Options để truy cập repository.
+
 ---
 
 ## Nền tảng
@@ -104,6 +110,7 @@ FocusGuard có thể đồng bộ Pomodoro với web app **MindSeed**:
 * Xem trạng thái Pomodoro.
 * Xem tiến độ daily goal.
 * Đổi giao diện (Sáng/Tối/Tự động).
+* Đổi ngôn ngữ (Việt/Anh).
 * Mở trang Options.
 
 ### Options
@@ -114,6 +121,7 @@ FocusGuard có thể đồng bộ Pomodoro với web app **MindSeed**:
 * Cài đặt Daily Goal (giới hạn bypass).
 * Quản lý Whitelist / Blacklist.
 * Chọn giao diện.
+* Đổi ngôn ngữ (Việt/Anh).
 * **Cho phép 5 phút** để tạm ngừng toàn bộ chặn.
 
 ---
@@ -135,11 +143,13 @@ FocusGuard/
 ├── popup/
 │   ├── popup.html
 │   ├── popup.js
-│   └── popup.css
+│   ├── popup.css
+│   └── i18n.js
 ├── options/
 │   ├── options.html
 │   ├── options.js
-│   └── options.css
+│   ├── options.css
+│   └── i18n.js
 ├── icons/
 │   ├── 16.png
 │   ├── 32.png
@@ -215,6 +225,8 @@ alarms
 * [X] Rà soát & sửa edge case (daily goal reset, pomodoro bị reset khi lưu settings, null daily goal, precedence whitelist/blacklist)
 * [X] Cải thiện khớp whitelist/blacklist theo domain
 * [X] Viết chính sách quyền riêng tư (PRIVACY.md)
+* [X] UI hiện đại — Plus Jakarta Sans, micro-interactions, dark mode tối ưu, spacing & tokens nhất quán
+* [X] Đa ngôn ngữ (Việt / Anh) với switch trong popup & Options
 
 ### v3 (Kế hoạch)
 

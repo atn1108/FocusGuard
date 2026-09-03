@@ -168,8 +168,6 @@ alarms
 *://*.facebook.com/*
 ```
 
-> Không có quyền truy cập vào localhost / 127.0.0.1 . Xem chính sách quyền riêng tư tại [PRIVACY.md](PRIVACY.md).
-
 ---
 
 ## Cài đặt
@@ -215,7 +213,6 @@ alarms
 
 * [X] Rà soát & sửa edge case (daily goal reset, pomodoro bị reset khi lưu settings, null daily goal, precedence whitelist/blacklist)
 * [X] Cải thiện khớp whitelist/blacklist theo domain
-* [X] Gỡ host permission dev (localhost / 127.0.0.1 / netlify)
 * [X] Viết chính sách quyền riêng tư (PRIVACY.md)
 
 ### v3 (Kế hoạch)

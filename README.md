@@ -109,19 +109,33 @@ Cấu hình:
 ---
 
 📁 Cấu trúc
-FocusGuard/
-├── manifest.json      # Cấu hình tiện ích (Manifest V3)
-├── popup/             # Giao diện người dùng trên thanh công cụ
-│   ├── popup.html
-│   ├── popup.css
-│   └── popup.js
-├── background/        # Xử lý luồng chạy ngầm (Service Worker)
-│   └── background.js
-├── content/           # Kịch bản tương tác trực tiếp với trang web
-│   └── content.js
-└── assets/            # Biểu tượng và tài nguyên đồ họa
-    └── icons/
+```bash
 
+FocusGuard/
+├── manifest.json
+├── popup/
+│   ├── popup.html
+│   ├── popup.js
+│   └── popup.css
+├── background/
+│   └── service_worker.js
+├── content/
+│   ├── content.js
+│   └── block.html
+├── newtab/
+│   ├── newtab.html
+│   ├── newtab.js
+│   └── newtab.css
+├── options/
+│   ├── options.html
+│   ├── options.js
+│   └── options.css
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+
+```
 ---
 
 🔐 Quyền

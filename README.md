@@ -2,13 +2,38 @@
 
 > Stop mindless scrolling before it starts.
 
-FocusGuard là tiện ích mở rộng Chrome giúp hạn chế việc lướt **YouTube Shorts, TikTok, Instagram Reels và Facebook Reels** bằng cách tạo một khoảng dừng trước khi người dùng tiếp tục.
+FocusGuard là tiện ích mở rộng Chrome giúp hạn chế việc lướt **YouTube Shorts, TikTok, Instagram Reels, Facebook Reels, Reddit, X (Twitter), Twitch, Pinterest và Netflix** bằng cách tạo một khoảng dừng trước khi người dùng tiếp tục.
 
-Thay vì chặn hoàn toàn, FocusGuard yêu cầu người dùng **chờ 30 giây và đưa ra quyết định có ý thức**.
+Thay vì chặn hoàn toàn, FocusGuard yêu cầu người dùng **chờ đếm ngược rồi đưa ra quyết định có ý thức**.
 
 ---
 
 ## Tính năng
+
+### v3.1 (Hiện tại)
+
+* **9 nền tảng + trang web tùy chỉnh** — Registry trung tâm (`sites.js`) cho YouTube (chỉ `/shorts/*`), TikTok, Instagram Reels, Facebook Reels, Reddit, X/Twitter, Twitch, Pinterest, Netflix (toàn trang). Thêm bất kỳ domain nào qua **Custom Sites** (trình duyệt sẽ hỏi quyền truy cập).
+* **Ngân sách thời lượng hàng ngày (Budgets)** — Giới hạn phút xem mỗi ngày cho từng nền tảng (mặc định 30 phút). Hết ngân sách = **chặn cứng**.
+* **Theo dõi thời gian thực** — `tracker.js` gửi heartbeat mỗi 30 giây khi tab đang hiển thị; dữ liệu lưu 100% cục bộ, tự xóa sau 30 ngày (`usage`, `usageHistory`).
+* **Overlay v3** — Giao diện chặn mới: đếm ngược, chọn **lý do** (buồn chán / trốn việc / thói quen), nút **Xem tiếp 10 phút** hoặc **Quay lại**. Chế độ nghiêm ngặt / hết goal / hết budget → không có nút bypass.
+* **Trang Tab mới (FocusGuard Home)** — Việc cần làm, trạng thái Pomodoro, thời lượng hôm nay so với ngân sách, streak, nút tạm dừng 5 phút. Có thể **tắt Tab mới** trong Options để quay về Tab mới mặc định của Chrome.
+* **Giải pháp icons dùng chung** — `icons.js` (9 brand icons SVG) dùng chung popup/options; i18n gộp thành 1 file `i18n.js` ở root.
+* **Options dạng TOC** — Sidebar 11 mục: Blocking, Budgets, Custom, Strict, Pomodoro, Goal, Lists, New Tab, Usage, Pause, Appearance.
+
+### v2.1 (UI + i18n)
+
+* **Giao diện hiện đại** — Font **Plus Jakarta Sans**, micro-interactions, dark mode tối ưu, shadow tokens.
+* **Đa ngôn ngữ (Việt / Anh)** — Switch ngôn ngữ trong popup và Options.
+
+### v2 (Nâng cấp)
+
+* **Chế độ nghiêm ngặt** — Không thể bỏ qua chặn. Phải chờ 60 giây rồi chỉ được quay lại.
+* **Pomodoro** — Tập trung theo chu kỳ (mặc định 25 phút tập trung / 5 phút nghỉ). Trong giờ nghỉ, FocusGuard tạm ngừng chặn.
+* **Đồng bộ Pomodoro với MindSeed** — Khi timer MindSeed chạy, FocusGuard tự bật Pomodoro và chặn nội dung; kèm badge "MindSeed" trên popup.
+* **Mục tiêu hàng ngày (Daily Goal)** — Giới hạn số lần bypass mỗi ngày. Hết giới hạn, không thể bypass nữa.
+* **Whitelist / Blacklist** — Danh sách URL/domain không chặn hoặc luôn chặn (blacklist chặn kể cả khi nền tảng tắt).
+* **Thống kê nâng cao** — Số lần chặn theo ngày, chuỗi thành công (streak).
+* **Theme** — Sáng / Tối / Tự động.
 
 ### v1.5 (Cơ bản)
 
@@ -18,83 +43,57 @@ Thay vì chặn hoàn toàn, FocusGuard yêu cầu người dùng **chờ 30 gi�
 * **Thống kê số lần chặn trong ngày**.
 * Hiển thị **thời gian override còn lại** ngay trong popup.
 * Chặn `ESC`, `F5`, `Ctrl + R` và `Cmd + R` khi popup đang mở.
-* Popup giao diện **frosted glass**.
 * **CSS chặn sớm**, hạn chế flash nội dung.
 * Hỗ trợ **SPA navigation** và `MutationObserver`.
 * Chặn/xóa liên kết Reel và Shorts.
 * Hiển thị badge `!` khi có sự kiện chặn.
 
-### v2 (Nâng cấp)
-
-* **Chế độ nghiêm ngặt** — Không thể bỏ qua chặn. Phải chờ 60 giây rồi chỉ được quay lại.
-* **Pomodoro** — Tập trung theo chu kỳ (mặc định 25 phút tập trung, 5 phút nghỉ). Trong giờ nghỉ, FocusGuard tạm ngừng chặn.
-* **Đồng bộ Pomodoro với MindSeed** — Khi timer MindSeed chạy, FocusGuard tự bật Pomodoro và chặn nội dung; kèm badge "MindSeed" trên popup.
-* **Mục tiêu hàng ngày** — Giới hạn số lần bypass mỗi ngày. Hết giới hạn, không thể bypass nữa.
-* **Whitelist / Blacklist** — Danh sách URL/domain không chặn hoặc luôn chặn.
-* **Thống kê nâng cao** — Theo dõi số lần chặn theo ngày, chuỗi thành công (streak).
-* **Theme** — Hỗ trợ giao diện Sáng / Tối / Tự động.
-
-### v2.1 (UI Modern + i18n)
-
-* **Giao diện hiện đại** — Font **Plus Jakarta Sans**, micro-interactions, dark mode tối ưu, spacing & border-radius nhất quán, shadow tokens (sm/md/lg).
-* **Đa ngôn ngữ (Việt / Anh)** — Switch ngôn ngữ ngay trong popup và Options. Ngôn ngữ được lưu và áp dụng cho toàn bộ giao diện.
-* **Link GitHub** trong footer Options để truy cập repository.
-
 ---
 
 ## Nền tảng
 
-| Nền tảng | Phạm vi                  | Cơ chế         |
-| ---------- | ------------------------- | ---------------- |
-| YouTube    | `/shorts/*`             | Popup + 30 giây |
-| TikTok     | Toàn trang               | Popup + 30 giây |
-| Instagram  | `/reel/*`, `/reels/*` | Chuyển hướng  |
-| Facebook   | `/reel/*`, `/reels/*` | Chuyển hướng  |
+| Nền tảng | Phạm vi | Cơ chế |
+|----------|------------------------|----------------|
+| YouTube | `/shorts/*` | Overlay + đếm ngược |
+| TikTok | Toàn trang | Overlay + đếm ngược |
+| Instagram | `/reel/*`, `/reels/*` | Overlay + đếm ngược |
+| Facebook | `/reel/*`, `/reels/*` | Overlay + đếm ngược |
+| Reddit | Toàn trang | Overlay + đếm ngược |
+| X (Twitter) | Toàn trang | Overlay + đếm ngược |
+| Twitch | Toàn trang | Overlay + đếm ngược |
+| Pinterest | Toàn trang | Overlay + đếm ngược |
+| Netflix | Toàn trang | Overlay + đếm ngược |
+| Custom sites | Domain tự thêm | Overlay + đếm ngược |
+
+Chế độ theo nền tảng trong Options:
+
+* **Chặn /shorts/*** (YouTube) hoặc **chặn /reel*, /reels*** (Instagram, Facebook): chỉ chặn nội dung dạng ngắn.
+* **Chặn toàn trang**: áp cho tất cả URL của nền tảng.
 
 ### Override
 
 Khi chọn **Xem tiếp**:
 
-* Nền tảng đó được mở trong **10 phút**.
-* Không hiển thị popup trong thời gian override.
+* Nền tảng đó được mở trong **10 phút** (không hiện popup trong thời gian này).
 * Mỗi nền tảng có bộ đếm riêng.
 * Hết 10 phút, FocusGuard tự động bật lại.
 
-### Strict Mode
+### Strict Mode / Daily Goal / Budgets
 
-Khi bật **Chế độ nghiêm ngặt**:
-
-* Không có nút "Xem tiếp" — chỉ có "Quay lại".
-* Thời gian chờ tăng lên **60 giây**.
-* Phù hợp khi bạn muốn chặn tuyệt đối.
+* **Strict Mode**: không có nút "Xem tiếp" — chỉ "Quay lại", thời gian chờ 60 giây.
+* **Daily Goal**: vượt số lần bypass/ngày → chặn cứng đến hết ngày.
+* **Budgets**: dùng hết số phút/ngày → chặn cứng cho đến khi reset ngày mới.
 
 ### Pomodoro
 
 * Đặt thời gian tập trung (mặc định 25 phút) và nghỉ (mặc định 5 phút).
-* Trong giờ tập trung, FocusGuard chặn bình thường.
-* Trong giờ nghỉ, FocusGuard tạm ngừng chặn.
-* Hiển thị bộ đếm Pomodoro trong popup.
-
-### Tích hợp MindSeed
-
-FocusGuard có thể đồng bộ Pomodoro với web app **MindSeed**:
-
-* Khi bạn **bắt đầu** timer tập trung trên MindSeed, FocusGuard tự bật Pomodoro và chặn các nền tảng (YouTube Shorts, TikTok, Instagram Reels, Facebook Reels).
-* Khi bạn **tạm dừng / dừng / hoàn thành** phiên trên MindSeed, FocusGuard tạm ngừng chặn.
-* Khi **tiếp tục** từ giữa chừng, FocusGuard giữ đúng thời gian còn lại.
-* Trên popup hiển thị **badge "MindSeed"** khi Pomodoro đang được điều khiển bởi MindSeed.
-* Bạn có thể đọc thêm và cài FocusGuard từ phần "Pair with FocusGuard" trong trang Hồ sơ của MindSeed.
-
-### Daily Goal
-
-* Đặt số lần bypass tối đa mỗi ngày (mặc định 3).
-* Khi đạt giới hạn, không thể bypass nữa trong ngày.
-* Dữ liệu tự động reset mỗi ngày.
+* Trong giờ tập trung, FocusGuard chặn bình thường; trong giờ nghỉ, tạm ngừng chặn.
+* Bộ đếm hiển thị trong popup và Trang Tab mới.
 
 ### Whitelist / Blacklist
 
 * **Whitelist**: URL/domain trong danh sách sẽ **KHÔNG BAO GIỜ** bị chặn.
-* **Blacklist**: URL/domain trong danh sách sẽ **LUÔN** bị chặn, dù nền tảng đang tắt.
+* **Blacklist**: URL/domain sẽ **LUÔN** bị chặn, dù nền tảng đang tắt (không thể bypass).
 
 ---
 
@@ -102,27 +101,24 @@ FocusGuard có thể đồng bộ Pomodoro với web app **MindSeed**:
 
 ### Popup
 
-* Bật/tắt FocusGuard.
-* Bật/tắt từng nền tảng.
-* Xem thống kê trong ngày.
-* Xem thời gian override.
-* Bật/tắt chế độ nghiêm ngặt.
-* Xem trạng thái Pomodoro.
-* Xem tiến độ daily goal.
-* Đổi giao diện (Sáng/Tối/Tự động).
-* Đổi ngôn ngữ (Việt/Anh).
-* Mở trang Options.
+* Bật/tắt FocusGuard & từng nền tảng.
+* Thống kê hôm nay (`usage`, 7 ngày), nút **Tạm dừng 5 phút**.
+* Xem trạng thái Pomodoro, tiến độ daily goal, streak.
+* Đổi theme, đổi ngôn ngữ, mở Options.
 
-### Options
+### Options (TOC 11 mục)
 
-* Quản lý các nền tảng.
-* Cài đặt Strict Mode.
-* Cài đặt Pomodoro (thời gian tập trung/nghỉ).
-* Cài đặt Daily Goal (giới hạn bypass).
-* Quản lý Whitelist / Blacklist.
-* Chọn giao diện.
-* Đổi ngôn ngữ (Việt/Anh).
-* **Cho phép 5 phút** để tạm ngừng toàn bộ chặn.
+* **Blocking** — bật/tắt từng nền tảng, chế độ chặn (toàn trang / `/shorts` / `/reel*`).
+* **Budgets** — giới hạn phút/ngày cho từng trang.
+* **Custom** — thêm/xóa trang web tùy chỉnh.
+* **Strict** — chế độ nghiêm ngặt.
+* **Pomodoro** — thời gian tập trung/nghỉ, bắt đầu/dừng.
+* **Goal** — daily goal, số lần bypass/ngày.
+* **Lists** — whitelist / blacklist.
+* **New Tab** — bật/tắt Trang Tab mới của FocusGuard.
+* **Usage** — báo cáo sử dụng (biểu đồ 7 ngày).
+* **Pause** — tạm ngừng toàn bộ chặn 5 phút.
+* **Appearance** — theme + ngôn ngữ.
 
 ---
 
@@ -130,54 +126,44 @@ FocusGuard có thể đồng bộ Pomodoro với web app **MindSeed**:
 
 ```text
 FocusGuard/
-├── manifest.json
-├── background.js
+├── manifest.json          # MV3, v3.1.0
+├── background.js          # budgets, usage, pomodoro, badges, custom scripts
+├── sites.js               # registry 9 nền tảng
+├── icons.js               # brand icons SVG dùng chung
+├── i18n.js                # bản dịch vi/en dùng chung
 ├── content/
-│   ├── confirm.js
-│   ├── blocker.js
-│   ├── index.js
+│   ├── confirm.js         # overlay v3 (showConfirm)
+│   ├── blocker.js         # luồng chặn (đếm ngược/budget/override)
+│   ├── index.js           # khởi động + lắng nghe sự kiện
 │   ├── router.js
-│   ├── observer.js
-│   ├── mindseed-bridge.js
+│   ├── observer.js        # MutationObserver + SPA
+│   ├── tracker.js         # usage heartbeat 30s
+│   ├── mindseed-bridge.js # đồng bộ Pomodoro MindSeed
 │   └── early-block.css
-├── popup/
-│   ├── popup.html
-│   ├── popup.js
-│   ├── popup.css
-│   └── i18n.js
-├── options/
-│   ├── options.html
-│   ├── options.js
-│   ├── options.css
-│   └── i18n.js
-├── icons/
-│   ├── 16.png
-│   ├── 32.png
-│   ├── 48.png
-│   └── 128.png
+├── popup/                 # popup.html/js/css
+├── options/               # options.html/js/css (TOC)
+├── newtab/                # Trang Tab mới (tasks, pomodoro, usage)
+├── icons/                 # 16/32/48/128
+├── .sentrux/              # rules.toml (kiến trúc)
 ├── PRIVACY.md
 └── README.md
 ```
 
 ---
 
-## Permissions
+## Quyền truy cập
 
 ```text
 storage
 alarms
+scripting
 ```
 
-> Không yêu cầu quyền `tabs`. Việc đóng tab (Strict Mode / "Quay lại") dùng `chrome.tabs.remove(sender.tab.id)` với sender từ content script — hợp lệ mà không cần `tabs`.
+**Host permissions** (khai báo trong `manifest.json`): youtube, tiktok, instagram, facebook, reddit, x.com, twitter.com, twitch.tv, pinterest.com, netflix.com.
 
-### Host permissions
+**Optional host permissions** (`http://*/*`, `https://*/*`): chỉ yêu cầu khi bạn thêm **Custom sites** — FocusGuard hỏi quyền khi cần, không chiếm trước.
 
-```text
-*://*.youtube.com/*
-*://*.tiktok.com/*
-*://*.instagram.com/*
-*://*.facebook.com/*
-```
+> Không yêu cầu quyền `tabs`. Việc đóng tab (Strict Mode / "Quay lại") dùng `chrome.tabs.remove(sender.tab.id)` từ sender của content script.
 
 ---
 
@@ -194,43 +180,37 @@ alarms
 
 ## Roadmap
 
-### v1.5
+### v1.5 → v2 → v2.1
 
-* [X] YouTube Shorts
-* [X] TikTok
-* [X] Instagram Reels
-* [X] Facebook Reels
-* [X] Countdown 30 giây
-* [X] Override 10 phút
-* [X] Popup & Options
-* [X] Thống kê
-* [X] SPA navigation
-* [X] MutationObserver
-* [X] Early blocking
-* [X] Link blocking
-* [X] Extension badge
+* [X] Các tính năng cơ bản, strict mode, pomodoro, daily goal, lists, theme, streak, i18n, UI hiện đại.
 
-### v2
+### v3.1 (Đã phát hành)
 
-* [X] Strict Mode
-* [X] Pomodoro
-* [X] Đồng bộ Pomodoro với MindSeed
-* [X] Daily Goal
-* [X] Whitelist / Blacklist
-* [X] Thống kê nâng cao
-* [X] Theme
+* [X] Registry 9 nền tảng (`sites.js`) + custom sites (optional host permissions)
+* [X] Budgets hàng ngày + chặn cứng khi hết ngân sách
+* [X] Usage tracking (heartbeat 30s, `usage`/`usageHistory`, tự xóa sau 30 ngày)
+* [X] Overlay v3 (đếm ngược, lý do, bypass 10 phút, strict/goal/budget không bypass)
+* [X] Trang Tab mới FocusGuard Home + toggle tắt/mở
+* [X] Icons dùng chung (`icons.js`), i18n 1 file root, Options TOC 11 mục
+* [X] Chống lỗi `Extension context invalidated` khi reload trong lúc phát triển
+* [X] Governance kiến trúc bằng sentrux (`sentrux check .` — 11 rules, quality 7651)
 
-### v2.1 (Production Hardening)
+### v3.2 (Kế hoạch)
 
-* [X] Rà soát & sửa edge case (daily goal reset, pomodoro bị reset khi lưu settings, null daily goal, precedence whitelist/blacklist)
-* [X] Cải thiện khớp whitelist/blacklist theo domain
-* [X] Viết chính sách quyền riêng tư (PRIVACY.md)
-* [X] UI hiện đại — Plus Jakarta Sans, micro-interactions, dark mode tối ưu, spacing & tokens nhất quán
-* [X] Đa ngôn ngữ (Việt / Anh) với switch trong popup & Options
+* [ ] Báo cáo hàng tuần từ `microJournal` (lý do đã chọn khi bị chặn)
+* [ ] Gamification: điểm, cấp độ, thành tựu
+* [ ] Biểu đồ usage chi tiết hơn trong Options
 
-### v3 (Kế hoạch)
+---
 
-* [ ] (dành cho bản phát hành tiếp theo)
+## Chất lượng & kiến trúc
+
+Dự án dùng **sentrux** làm cảm biến kiến trúc: định nghĩa layer & boundary trong `.sentrux/rules.toml`, chạy `sentrux check .` trước khi phát hành. Hiện tại: acyclicity 10000, redundancy 12.7%, 0 vi phạm boundary.
+
+```bash
+sentrux check .
+# ✓ All architectural rules pass
+```
 
 ---
 
@@ -238,6 +218,6 @@ alarms
 
 FocusGuard không cấm bạn xem.
 
-Nó chỉ tạo ra **30 giây để bạn dừng lại và lựa chọn**.
+Nó chỉ tạo ra **một khoảng dừng để bạn lựa chọn có ý thức**.
 
 > **Pause. Think. Choose.**

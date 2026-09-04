@@ -109,28 +109,19 @@ Cấu hình:
 ---
 
 📁 Cấu trúc
-
 FocusGuard/
-├── manifest.json
-├── background.js
-├── sites.js
-├── icons.js
-├── i18n.js
-├── content/
-│   ├── confirm.js
-│   ├── blocker.js
-│   ├── index.js
-│   ├── router.js
-│   ├── observer.js
-│   ├── tracker.js
-│   ├── mindseed-bridge.js
-│   └── early-block.css
-├── popup/
-├── options/
-├── newtab/
-├── icons/
-├── PRIVACY.md
-└── README.md
+├── manifest.json      # Cấu hình tiện ích (Manifest V3)
+├── popup/             # Giao diện người dùng trên thanh công cụ
+│   ├── popup.html
+│   ├── popup.css
+│   └── popup.js
+├── background/        # Xử lý luồng chạy ngầm (Service Worker)
+│   └── background.js
+├── content/           # Kịch bản tương tác trực tiếp với trang web
+│   └── content.js
+└── assets/            # Biểu tượng và tài nguyên đồ họa
+    └── icons/
+
 ---
 
 🔐 Quyền

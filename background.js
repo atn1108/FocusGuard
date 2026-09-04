@@ -1,3 +1,5 @@
+importScripts("sites.js");
+
 chrome.runtime.onInstalled.addListener(() => {
 
     chrome.storage.local.get(["enabled"], (data) => {
@@ -11,6 +13,11 @@ chrome.runtime.onInstalled.addListener(() => {
                 tiktok: true,
                 instagram: true,
                 facebook: true,
+                reddit: true,
+                x: true,
+                twitch: true,
+                pinterest: true,
+                netflix: true,
                 allowUntil: 0,
                 override: {},
 
@@ -31,8 +38,16 @@ chrome.runtime.onInstalled.addListener(() => {
                 whitelist: [],
                 blacklist: [],
                 theme: "auto",
-                advancedStats: {}
+                advancedStats: {},
 
+                budgets: {},
+                customSites: [],
+                usage: { date: new Date().toDateString() },
+                usageHistory: {},
+                microJournal: {}
+
+            }, () => {
+                syncCustomScripts([]);
             });
 
         }
@@ -41,6 +56,93 @@ chrome.runtime.onInstalled.addListener(() => {
 
 });
 
+chrome.runtime.onStartup.addListener(() => {
+    chrome.storage.local.get(["customSites"], data => {
+        syncCustomScripts(data.customSites || []);
+    });
+});
+
+// Keep dynamic content scripts in sync with user-added custom sites.
+// Chromium does not persist dynamically-registered content scripts across
+// browser restarts, so we re-register on startup and after every change.
+async function syncCustomScripts(list) {
+
+    const scripts = [];
+    (list || []).forEach(c => {
+        const host = String(c.host || "")
+            .replace(/^https?:\/\//, "")
+            .replace(/\/.*$/, "")
+            .replace(/^www\./, "")
+            .toLowerCase();
+        if (!host) return;
+
+        const id = "fg-custom-" + host.replace(/[^a-z0-9.-]/g, "");
+        scripts.push({
+            id: id,
+            matches: ["*://" + host + "/*", "*://*." + host + "/*"],
+            js: ["sites.js", "content/confirm.js", "content/blocker.js", "content/index.js", "content/router.js", "content/observer.js", "content/tracker.js"],
+            css: ["content/early-block.css"],
+            runAt: "document_start"
+        });
+    });
+
+    try {
+        const existing = await chrome.scripting.getRegisteredContentScripts();
+        const keep = new Set(scripts.map(s => s.id));
+        const toRemove = existing
+            .map(e => e.id)
+            .filter(id => id.indexOf("fg-custom-") === 0 && !keep.has(id));
+
+        if (toRemove.length) {
+            await chrome.scripting.unregisterContentScripts({ ids: toRemove });
+        }
+        if (scripts.length) {
+            await chrome.scripting.registerContentScripts(scripts);
+        }
+    } catch (e) {
+        console.warn("[FocusGuard] syncCustomScripts error:", e);
+    }
+}
+
+// --- Active-time tracking (heartbeat buffer + periodic flush) -----------------
+let usageBuffer = {};
+let usageFlushTimer = null;
+
+function scheduleUsageFlush() {
+    if (usageFlushTimer) return;
+    usageFlushTimer = setTimeout(flushUsage, 20000);
+}
+
+function flushUsage() {
+    usageFlushTimer = null;
+    if (!Object.keys(usageBuffer).length) return;
+
+    const delta = usageBuffer;
+    usageBuffer = {};
+
+    chrome.storage.local.get(["usage", "usageHistory"], data => {
+        const today = new Date().toDateString();
+
+        let usage = data.usage || {};
+        if (usage.date !== today) usage = { date: today };
+
+        let hist = data.usageHistory || {};
+        if (!hist[today]) hist[today] = {};
+
+        Object.keys(delta).forEach(key => {
+            usage[key] = (usage[key] || 0) + delta[key];
+            hist[today][key] = (hist[today][key] || 0) + delta[key];
+        });
+
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        Object.keys(hist).forEach(d => {
+            if (new Date(d) < cutoff) delete hist[d];
+        });
+
+        chrome.storage.local.set({ usage, usageHistory: hist });
+    });
+}
 
 chrome.runtime.onMessage.addListener(
     (message, sender, sendResponse) => {
@@ -53,6 +155,31 @@ chrome.runtime.onMessage.addListener(
 
             });
 
+            return true;
+        }
+
+        if (message.type === "USAGE_HEARTBEAT") {
+
+            const seconds = Number(message.seconds) || 30;
+            chrome.storage.local.get(["customSites"], data => {
+                const customs = data.customSites || [];
+                const site = FocusGuardSites.resolve(sender.url || "", customs);
+                if (site) {
+                    usageBuffer[site.key] = (usageBuffer[site.key] || 0) + seconds;
+                    scheduleUsageFlush();
+                }
+            });
+            return false;
+        }
+
+        if (message.type === "UPDATE_CUSTOM_SITES") {
+
+            const list = message.customSites || [];
+            chrome.storage.local.set({ customSites: list }, () => {
+                syncCustomScripts(list).then(() => {
+                    sendResponse({ ok: true });
+                });
+            });
             return true;
         }
 

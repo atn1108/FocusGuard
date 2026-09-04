@@ -1,24 +1,6 @@
-const ids = [
-    "enabled",
-    "youtube",
-    "tiktok",
-    "instagram",
-    "facebook"
-];
+const siteKeys = FocusGuardSites.keys();
 
-const statKeys = {
-    youtube: "stat-youtube",
-    tiktok: "stat-tiktok",
-    instagram: "stat-instagram",
-    facebook: "stat-facebook"
-};
-
-const overrideIds = {
-    youtube: "cd-youtube",
-    tiktok: "cd-tiktok",
-    instagram: "cd-instagram",
-    facebook: "cd-facebook"
-};
+const toggleIds = ["enabled"].concat(siteKeys);
 
 function applyEnabledState(enabled) {
     document.body.classList.toggle("disabled", !enabled);
@@ -40,13 +22,67 @@ function applyI18n() {
     });
     const label = document.getElementById("lang-label");
     if (label) label.textContent = getLanguage() === "vi" ? "VI" : "EN";
+    renderPlatforms();
+    renderToday();
+    renderStats();
+}
+
+function renderPlatforms() {
+    const listEl = document.getElementById("platform-list");
+    if (!listEl) return;
+
+    listEl.innerHTML = "";
+
+    siteKeys.forEach(key => {
+        const site = FocusGuardSites.siteFor(key);
+
+        const item = document.createElement("div");
+        item.className = "platform-item";
+
+        const info = document.createElement("div");
+        info.className = "platform-info";
+
+        const icon = document.createElement("div");
+        icon.className = "platform-icon " + site.brand;
+        icon.innerHTML = FocusGuardIcons.iconFor(site, 16);
+
+        const name = document.createElement("span");
+        name.className = "platform-name";
+        name.textContent = site.label;
+
+        info.appendChild(icon);
+        info.appendChild(name);
+
+        const right = document.createElement("div");
+        right.className = "platform-right";
+
+        const cd = document.createElement("span");
+        cd.className = "countdown";
+        cd.id = "cd-" + key;
+
+        const label = document.createElement("label");
+        label.className = "toggle small";
+        label.innerHTML = `<input type="checkbox" id="${key}" checked><span class="slider"></span>`;
+
+        right.appendChild(cd);
+        right.appendChild(label);
+
+        item.appendChild(info);
+        item.appendChild(right);
+        listEl.appendChild(item);
+    });
+
+    toggleIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("change", () => save(id));
+    });
 }
 
 function load() {
     chrome.storage.local.get(
-        [...ids, "strictMode", "theme", "pomodoro", "dailyGoal"],
+        [...toggleIds, "strictMode", "theme", "pomodoro", "dailyGoal"],
         data => {
-            ids.forEach(id => {
+            toggleIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
                     el.checked = data[id] !== false;
@@ -62,6 +98,10 @@ function load() {
 
             updatePomodoroDisplay(data.pomodoro);
             updateDailyGoalDisplay(data.dailyGoal);
+
+            renderPlatforms();
+            renderToday();
+            renderStats();
         }
     );
 }
@@ -75,16 +115,37 @@ function save(id) {
     });
 }
 
-function loadStats() {
+function renderStats() {
     chrome.storage.local.get(["stats"], data => {
         const stats = data.stats || {};
-        Object.keys(statKeys).forEach(key => {
-            const el = document.getElementById(statKeys[key]);
-            if (el) {
-                el.textContent = stats[key] || 0;
-            }
+        const grid = document.getElementById("stats");
+        if (!grid) return;
+
+        grid.innerHTML = "";
+
+        siteKeys.forEach(key => {
+            const card = document.createElement("div");
+            card.className = "stat-card";
+
+            const value = document.createElement("div");
+            value.className = "stat-value";
+            value.id = "stat-" + key;
+            value.textContent = stats[key] || 0;
+
+            const labelEl = document.createElement("div");
+            labelEl.className = "stat-label";
+            const site = FocusGuardSites.siteFor(key);
+            labelEl.textContent = (site ? site.label : key).split(" ")[0];
+
+            card.appendChild(value);
+            card.appendChild(labelEl);
+            grid.appendChild(card);
         });
     });
+}
+
+function loadStats() {
+    renderStats();
 }
 
 function loadStreak() {
@@ -107,17 +168,60 @@ function updateCountdowns() {
     chrome.storage.local.get(["override"], data => {
         const override = data.override || {};
         const now = Date.now();
-        Object.keys(overrideIds).forEach(platform => {
-            const el = document.getElementById(overrideIds[platform]);
-            const until = override[platform];
-            if (until && now < until) {
-                el.textContent = formatRemaining(until - now);
-                el.classList.add("active");
-            } else {
-                el.textContent = "";
-                el.classList.remove("active");
+        siteKeys.forEach(key => {
+            const el = document.getElementById("cd-" + key);
+            const until = override[key];
+            if (el) {
+                if (until && now < until) {
+                    el.textContent = formatRemaining(until - now);
+                    el.classList.add("active");
+                } else {
+                    el.textContent = "";
+                    el.classList.remove("active");
+                }
             }
         });
+    });
+}
+
+function renderToday() {
+    const listEl = document.getElementById("today-list");
+    if (!listEl) return;
+
+    chrome.storage.local.get(["usage", "budgets"], data => {
+        const usage = data.usage || {};
+        const budgets = data.budgets || {};
+        const rows = [];
+        let totalUsed = 0;
+        let totalBudget = 0;
+
+        siteKeys.forEach(key => {
+            const usedSec = usage[key] || 0;
+            const min = budgets[key] != null ? budgets[key] : FocusGuardSites.DEFAULT_BUDGET_MINUTES;
+            const usedMin = Math.floor(usedSec / 60);
+            const site = FocusGuardSites.siteFor(key);
+
+            totalUsed += usedMin;
+            totalBudget += min;
+
+            const pct = Math.min(100, (usedSec / (min * 60)) * 100);
+
+            rows.push(`
+                <div class="today-row">
+                    <div class="today-head">
+                        <span class="today-name">${site ? site.label : key}</span>
+                        <span class="today-value ${pct >= 100 ? 'over' : ''}">${usedMin}m / ${min}m</span>
+                    </div>
+                    <div class="today-bar"><div class="today-bar-fill ${pct >= 100 ? 'over' : ''}" style="width:${pct}%"></div></div>
+                </div>
+            `);
+        });
+
+        listEl.innerHTML = rows.join("") +
+            `<div class="today-total">
+                <span>${t("todayTotal")}</span>
+                <strong>${totalUsed}m <span class="today-sep">/</span> ${totalBudget}m</strong>
+            </div>`;
     });
 }
 
@@ -204,7 +308,7 @@ function updateDailyGoalDisplay(goal) {
 }
 
 
-ids.forEach(id => {
+toggleIds.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
         el.addEventListener("change", () => save(id));
@@ -262,10 +366,10 @@ initLanguage(() => {
 });
 
 load();
-loadStats();
 loadStreak();
 updateCountdowns();
 setInterval(updateCountdowns, 1000);
+setInterval(renderToday, 5000);
 
 setInterval(() => {
     chrome.storage.local.get(["pomodoro"], data => {
@@ -280,6 +384,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
         }
         if (changes.pomodoro) {
             updatePomodoroDisplay(changes.pomodoro.newValue);
+        }
+        if (changes.usage || changes.budgets) {
+            renderToday();
         }
     }
 });

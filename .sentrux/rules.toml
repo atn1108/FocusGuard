@@ -1,0 +1,50 @@
+[constraints]
+max_cycles = 0
+max_coupling = "C"
+max_cc = 35
+no_god_files = false
+
+[[layers]]
+name = "shared"
+paths = ["i18n.js", "sites.js", "icons.js"]
+order = 0
+
+[[layers]]
+name = "content"
+paths = ["content/*"]
+order = 0
+
+[[layers]]
+name = "popup"
+paths = ["popup/*"]
+order = 1
+
+[[layers]]
+name = "options"
+paths = ["options/*"]
+order = 1
+
+[[layers]]
+name = "newtab"
+paths = ["newtab/*"]
+order = 1
+
+[[layers]]
+name = "background"
+paths = ["background.js", "manifest.json"]
+order = 1
+
+[[boundaries]]
+from = "popup/*"
+to = "content/*"
+reason = "Popup must not reach into content-script internals"
+
+[[boundaries]]
+from = "options/*"
+to = "content/*"
+reason = "Options must not reach into content-script internals"
+
+[[boundaries]]
+from = "newtab/*"
+to = "content/*"
+reason = "New tab page must not reach into content-script internals"

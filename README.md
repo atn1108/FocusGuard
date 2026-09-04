@@ -116,7 +116,6 @@ FocusGuard/
 ├── sites.js
 ├── icons.js
 ├── i18n.js
-│
 ├── content/
 │   ├── confirm.js
 │   ├── blocker.js
@@ -126,14 +125,12 @@ FocusGuard/
 │   ├── tracker.js
 │   ├── mindseed-bridge.js
 │   └── early-block.css
-│
 ├── popup/
 ├── options/
 ├── newtab/
 ├── icons/
 ├── PRIVACY.md
 └── README.md
-
 ---
 
 🔐 Quyền

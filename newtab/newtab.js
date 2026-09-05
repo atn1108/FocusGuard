@@ -87,7 +87,7 @@ function renderPomodoro() {
         const phaseEl = document.getElementById("pomo-phase");
         const progressEl = document.getElementById("pomo-progress");
 
-        if (!pomo || !pomo.enabled || !pomo.endsAt) {
+        if (!pomo || !pomo.enabled || !pomo.endsAt || pomo.endsAt <= Date.now()) {
             if (card) card.style.opacity = "0";
             return;
         }

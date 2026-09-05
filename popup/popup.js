@@ -230,7 +230,7 @@ function updatePomodoroDisplay(pomo) {
     if (!section) return;
 
     pomo = pomo || {};
-    if (!pomo.enabled || !pomo.endsAt) {
+    if (!pomo.enabled || !pomo.endsAt || pomo.endsAt <= Date.now()) {
         section.style.display = "none";
         return;
     }

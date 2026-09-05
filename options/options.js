@@ -478,7 +478,7 @@ function updatePomodoroStatus(pomo) {
     const startBtn = document.getElementById("pomo-start");
     const stopBtn = document.getElementById("pomo-stop");
 
-    if (!pomo || !pomo.enabled || !pomo.endsAt) {
+    if (!pomo || !pomo.enabled || !pomo.endsAt || pomo.endsAt <= Date.now()) {
         if (statusText) statusText.textContent = "";
         if (startBtn) startBtn.style.display = "inline-flex";
         if (stopBtn) stopBtn.style.display = "none";

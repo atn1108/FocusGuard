@@ -154,26 +154,17 @@ Dữ liệu usage được lưu cục bộ trên thiết bị.
 
 🚀 Cài đặt
 
-🖥️ Cách 1 — Tải từ GitHub
+Tải source về (chọn 1 trong 2):
 
-1. Clone repo về máy:
+- **Git**: `git clone https://github.com/atn1108/FocusGuard.git`
+- **ZIP**: vào [trang GitHub](https://github.com/atn1108/FocusGuard) → **Code** → **Download ZIP** rồi giải nén.
 
-```bash
-git clone https://github.com/atn1108/FocusGuard.git
-```
+Sau đó:
 
-2. Mở "chrome://extensions".
-3. Bật Developer mode (góc trên bên phải).
-4. Chọn **Load unpacked**.
-5. Chọn thư mục "FocusGuard" vừa clone.
-
-🖱️ Cách 2 — Tải ZIP
-
-1. Vào trang [FocusGuard trên GitHub](https://github.com/atn1108/FocusGuard).
-2. Bấm nút **Code** → **Download ZIP**.
-3. Giải nén file ZIP.
-4. Mở "chrome://extensions".
-5. Bật Developer mode → **Load unpacked** → chọn thư mục "FocusGuard" vừa giải nén.
+1. Mở `chrome://extensions`.
+2. Bật **Developer mode** (góc phải trên).
+3. Chọn **Load unpacked**.
+4. Chọn thư mục `FocusGuard` vừa clone/giải nén.
 
 «Yêu cầu trình duyệt Chromium hỗ trợ Manifest V3.»
 

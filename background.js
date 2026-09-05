@@ -291,15 +291,24 @@ chrome.runtime.onMessage.addListener(
                 const now = Date.now();
                 if (now >= pomo.endsAt) {
 
-                    const newIsBreak = !pomo.isBreak;
-                    const duration = newIsBreak
-                        ? (pomo.breakMinutes || 5) * 60 * 1000
-                        : (pomo.focusMinutes || 25) * 60 * 1000;
+                    if (pomo.isBreak) {
+                        // Break finished -> the cycle is complete, stop the pomodoro.
+                        const done = {
+                            ...pomo,
+                            enabled: false,
+                            isBreak: false,
+                            endsAt: 0
+                        };
+                        chrome.storage.local.set({ pomodoro: done });
+                        chrome.alarms.clear("pomodoro-tick");
+                        return;
+                    }
 
+                    // Focus finished -> switch to break.
                     const updated = {
                         ...pomo,
-                        isBreak: newIsBreak,
-                        endsAt: now + duration
+                        isBreak: true,
+                        endsAt: now + (pomo.breakMinutes || 5) * 60 * 1000
                     };
 
                     chrome.storage.local.set({ pomodoro: updated });
@@ -510,15 +519,24 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             const now = Date.now();
             if (now >= pomo.endsAt) {
 
-                const newIsBreak = !pomo.isBreak;
-                const duration = newIsBreak
-                    ? (pomo.breakMinutes || 5) * 60 * 1000
-                    : (pomo.focusMinutes || 25) * 60 * 1000;
+                if (pomo.isBreak) {
+                    // Break finished -> the cycle is complete, stop the pomodoro.
+                    const done = {
+                        ...pomo,
+                        enabled: false,
+                        isBreak: false,
+                        endsAt: 0
+                    };
+                    chrome.storage.local.set({ pomodoro: done });
+                    chrome.alarms.clear("pomodoro-tick");
+                    return;
+                }
 
+                // Focus finished -> switch to break.
                 const updated = {
                     ...pomo,
-                    isBreak: newIsBreak,
-                    endsAt: now + duration
+                    isBreak: true,
+                    endsAt: now + (pomo.breakMinutes || 5) * 60 * 1000
                 };
 
                 chrome.storage.local.set({ pomodoro: updated });

@@ -36,7 +36,7 @@ const translations = {
         budgetStatus: "Thời lượng hôm nay",
         blockShortsOrPrefix: "Chặn /shorts/*",
         newTabTitle: "Tab mới",
-        newTabDesc: "Trang Tab mới của FocusGuard: việc cần làm, Pomodoro và thời lượng hôm nay. Tắt để dùng Tab mới mặc định của Chrome.",
+        newTabDesc: "Trang Tab mới của FocusGuard: việc cần làm, Pomodoro và thời lượng hôm nay. Tắt để dùng Tab mới mặc định của trình duyệt.",
         enableNewTab: "Dùng Tab mới của FocusGuard",
         newtabTitle: "Hôm nay bạn định hoàn thành gì?",
         taskPlaceholder: "+ Thêm việc cần làm...",

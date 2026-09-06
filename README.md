@@ -79,35 +79,6 @@ FocusGuard theo dõi thời gian sử dụng ngay trên thiết bị.
 
 ---
 
-🔧 Quản lý
-
-Popup
-
-- Bật/tắt FocusGuard.
-- Quản lý từng nền tảng.
-- Xem usage, streak và Daily Goal.
-- Xem Pomodoro.
-- Tạm dừng chặn 5 phút.
-- Đổi theme và ngôn ngữ.
-
-Options
-
-Cấu hình:
-
-- Blocking
-- Budgets
-- Custom Sites
-- Strict Mode
-- Pomodoro
-- Daily Goal
-- Whitelist / Blacklist
-- New Tab
-- Usage
-- Pause
-- Appearance
-
----
-
 📁 Cấu trúc
 ```bash
 
@@ -140,9 +111,11 @@ FocusGuard/
 
 🔐 Quyền
 
+```
 storage
 alarms
 scripting
+```
 
 FocusGuard chỉ yêu cầu quyền truy cập các website được hỗ trợ.
 
@@ -162,7 +135,7 @@ Tải source về (chọn 1 trong 2):
 Sau đó:
 
 1. Mở `chrome://extensions`.
-2. Bật **Developer mode** (góc phải trên).
+2. Bật **Developer mode**.
 3. Chọn **Load unpacked**.
 4. Chọn thư mục `FocusGuard` vừa clone/giải nén.
 

@@ -27,7 +27,8 @@ chrome.runtime.onInstalled.addListener(() => {
                     focusMinutes: 25,
                     breakMinutes: 5,
                     isBreak: false,
-                    endsAt: 0
+                    endsAt: 0,
+                    previousStrictMode: false
                 },
                 dailyGoal: {
                     enabled: false,
@@ -299,8 +300,10 @@ chrome.runtime.onMessage.addListener(
                             isBreak: false,
                             endsAt: 0
                         };
-                        chrome.storage.local.set({ pomodoro: done });
-                        chrome.alarms.clear("pomodoro-tick");
+                        chrome.storage.local.set(
+                            { pomodoro: done, strictMode: pomo.previousStrictMode !== undefined ? pomo.previousStrictMode : false },
+                            () => chrome.alarms.clear("pomodoro-tick")
+                        );
                         return;
                     }
 
@@ -386,21 +389,28 @@ chrome.runtime.onMessage.addListener(
         if (message.type === "START_POMODORO") {
 
             const focusMs = (message.focusMinutes || 25) * 60 * 1000;
-            const pomo = {
-                enabled: true,
-                focusMinutes: message.focusMinutes || 25,
-                breakMinutes: message.breakMinutes || 5,
-                isBreak: false,
-                endsAt: Date.now() + focusMs
-            };
 
-            chrome.storage.local.set({ pomodoro: pomo }, () => {
+            chrome.storage.local.get(["strictMode"], data => {
 
-                chrome.alarms.create("pomodoro-tick", {
-                    when: Date.now() + 60000
+                const pomo = {
+                    enabled: true,
+                    focusMinutes: message.focusMinutes || 25,
+                    breakMinutes: message.breakMinutes || 5,
+                    isBreak: false,
+                    endsAt: Date.now() + focusMs,
+                    previousStrictMode: !!data.strictMode
+                };
+
+                // Pomodoro focus enforces strict mode even if it was turned off.
+                chrome.storage.local.set({ pomodoro: pomo, strictMode: true }, () => {
+
+                    chrome.alarms.create("pomodoro-tick", {
+                        when: Date.now() + 60000
+                    });
+
+                    sendResponse({ ok: true });
+
                 });
-
-                sendResponse({ ok: true });
 
             });
 
@@ -410,17 +420,28 @@ chrome.runtime.onMessage.addListener(
 
         if (message.type === "STOP_POMODORO") {
 
-            const pomo = {
-                enabled: false,
-                focusMinutes: 25,
-                breakMinutes: 5,
-                isBreak: false,
-                endsAt: 0
-            };
+            chrome.storage.local.get(["pomodoro"], data => {
 
-            chrome.storage.local.set({ pomodoro: pomo }, () => {
-                chrome.alarms.clear("pomodoro-tick");
-                sendResponse({ ok: true });
+                const prev = (data.pomodoro || {}).previousStrictMode;
+
+                const pomo = {
+                    enabled: false,
+                    focusMinutes: 25,
+                    breakMinutes: 5,
+                    isBreak: false,
+                    endsAt: 0,
+                    previousStrictMode: false
+                };
+
+                // Restore the strict mode that was in effect before the pomodoro.
+                chrome.storage.local.set(
+                    { pomodoro: pomo, strictMode: prev !== undefined ? prev : false },
+                    () => {
+                        chrome.alarms.clear("pomodoro-tick");
+                        sendResponse({ ok: true });
+                    }
+                );
+
             });
 
             return true;
@@ -438,37 +459,55 @@ chrome.runtime.onMessage.addListener(
                 // otherwise fall back to the full focus duration.
                 const remainingSecs = message.remainingSeconds || message.focusMinutes || 25;
                 const focusMs = remainingSecs * 1000;
-                const pomo = {
-                    enabled: true,
-                    focusMinutes: message.focusMinutes || 25,
-                    breakMinutes: message.focusMinutes || 25,
-                    isBreak: false,
-                    endsAt: Date.now() + focusMs,
-                    fromMindSeed: true
-                };
 
-                chrome.storage.local.set({ pomodoro: pomo }, () => {
-                    chrome.alarms.create("pomodoro-tick", {
-                        when: Date.now() + 60000
+                chrome.storage.local.get(["strictMode"], data => {
+
+                    const pomo = {
+                        enabled: true,
+                        focusMinutes: message.focusMinutes || 25,
+                        breakMinutes: message.focusMinutes || 25,
+                        isBreak: false,
+                        endsAt: Date.now() + focusMs,
+                        fromMindSeed: true,
+                        previousStrictMode: !!data.strictMode
+                    };
+
+                    // Pomodoro focus enforces strict mode even if it was turned off.
+                    chrome.storage.local.set({ pomodoro: pomo, strictMode: true }, () => {
+                        chrome.alarms.create("pomodoro-tick", {
+                            when: Date.now() + 60000
+                        });
+                        sendResponse({ ok: true });
                     });
-                    sendResponse({ ok: true });
+
                 });
 
             } else {
 
                 // pause / stop / complete -> mirror MindSeed's timer going idle,
                 // so FocusGuard stops blocking distractions.
-                const pomo = {
-                    enabled: false,
-                    focusMinutes: 25,
-                    breakMinutes: 5,
-                    isBreak: false,
-                    endsAt: 0
-                };
+                chrome.storage.local.get(["pomodoro"], data => {
 
-                chrome.storage.local.set({ pomodoro: pomo }, () => {
-                    chrome.alarms.clear("pomodoro-tick");
-                    sendResponse({ ok: true });
+                    const prev = (data.pomodoro || {}).previousStrictMode;
+
+                    const pomo = {
+                        enabled: false,
+                        focusMinutes: 25,
+                        breakMinutes: 5,
+                        isBreak: false,
+                        endsAt: 0,
+                        previousStrictMode: false
+                    };
+
+                    // Restore the strict mode that was in effect before the pomodoro.
+                    chrome.storage.local.set(
+                        { pomodoro: pomo, strictMode: prev !== undefined ? prev : false },
+                        () => {
+                            chrome.alarms.clear("pomodoro-tick");
+                            sendResponse({ ok: true });
+                        }
+                    );
+
                 });
 
             }
@@ -527,8 +566,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
                         isBreak: false,
                         endsAt: 0
                     };
-                    chrome.storage.local.set({ pomodoro: done });
-                    chrome.alarms.clear("pomodoro-tick");
+                    chrome.storage.local.set(
+                        { pomodoro: done, strictMode: pomo.previousStrictMode !== undefined ? pomo.previousStrictMode : false },
+                        () => chrome.alarms.clear("pomodoro-tick")
+                    );
                     return;
                 }
 

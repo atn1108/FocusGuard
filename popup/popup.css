@@ -423,6 +423,21 @@ body {
   color: var(--text-muted);
 }
 
+/* Strict mode is forced on during a Pomodoro session */
+.feature-row.strict-locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.feature-row.strict-locked .feature-info {
+  color: var(--text-muted);
+}
+
+.feature-row.strict-locked .toggle {
+  cursor: not-allowed;
+}
+
 /* Today (usage vs budget) */
 .today-list {
   display: flex;

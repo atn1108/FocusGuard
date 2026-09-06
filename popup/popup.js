@@ -225,12 +225,38 @@ function renderToday() {
     });
 }
 
+function updateStrictLock(pomo) {
+    const row = document.getElementById("strict-row");
+    const strictEl = document.getElementById("strictMode");
+    if (!row || !strictEl) return;
+
+    pomo = pomo || {};
+    const active = pomo.enabled && pomo.endsAt && pomo.endsAt > Date.now();
+
+    if (active) {
+        // Pomodoro focus enforces strict mode: lock it on and dim the control.
+        row.classList.add("strict-locked");
+        strictEl.disabled = true;
+        strictEl.checked = true;
+    } else {
+        row.classList.remove("strict-locked");
+        strictEl.disabled = false;
+        chrome.storage.local.get(["strictMode"], data => {
+            strictEl.checked = data.strictMode === true;
+        });
+    }
+}
+
 function updatePomodoroDisplay(pomo) {
     const section = document.getElementById("pomodoro-section");
     if (!section) return;
 
     pomo = pomo || {};
-    if (!pomo.enabled || !pomo.endsAt || pomo.endsAt <= Date.now()) {
+    const active = pomo.enabled && pomo.endsAt && pomo.endsAt > Date.now();
+
+    updateStrictLock(pomo);
+
+    if (!active) {
         section.style.display = "none";
         return;
     }

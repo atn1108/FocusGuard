@@ -244,6 +244,15 @@ function normalizeSiteInput(value) {
     return v;
 }
 
+function getCustomSiteOrigins(host) {
+    return [
+        "http://" + host + "/*",
+        "https://" + host + "/*",
+        "http://*." + host + "/*",
+        "https://*." + host + "/*"
+    ];
+}
+
 function addCustomSite() {
     const input = document.getElementById("custom-site-input");
     const host = normalizeSiteInput(input.value);
@@ -264,7 +273,7 @@ function addCustomSite() {
         }
 
         chrome.permissions.request({
-            origins: ["*://" + host + "/*", "*://*." + host + "/*"]
+            origins: getCustomSiteOrigins(host)
         }, granted => {
             if (!granted) {
                 showSaved(t("permissionDenied"));
@@ -289,7 +298,7 @@ function removeCustomSite(host) {
         const list = data.customSites || [];
         const next = list.filter(c => c.host !== host);
         chrome.storage.local.set({ customSites: next }, () => {
-            chrome.permissions.remove({ origins: ["*://" + host + "/*", "*://*." + host + "/*"] });
+            chrome.permissions.remove({ origins: getCustomSiteOrigins(host) });
             chrome.runtime.sendMessage({ type: "UPDATE_CUSTOM_SITES", customSites: next }, () => {
                 renderCustomSites();
                 renderUsage();
@@ -517,13 +526,13 @@ function renderList(containerId, items, type) {
     container.querySelectorAll(".list-tag-remove").forEach(btn => {
         btn.addEventListener("click", () => {
             const idx = parseInt(btn.dataset.idx);
-            const t = btn.dataset.type;
-            const key = t === "whitelist" ? "whitelist" : "blacklist";
+            const listType = btn.dataset.type;
+            const key = listType === "whitelist" ? "whitelist" : "blacklist";
             chrome.storage.local.get([key], data => {
                 const list = data[key] || [];
                 list.splice(idx, 1);
                 chrome.storage.local.set({ [key]: list }, () => {
-                    renderList(containerId, list, t);
+                    renderList(containerId, list, listType);
                     showSaved(t("savedDelete"));
                 });
             });
